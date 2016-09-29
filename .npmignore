@@ -1,0 +1,18 @@
+/.eslintignore
+/.eslintrc.js
+/.flake8
+/.flowconfig
+/CONTRIBUTING.md
+/ISSUE_TEMPLATE.md
+/docs
+/flow-typed
+/pkg/sample-*
+/resources/benchmarker
+/scripts
+spec
+
+# Ignore "BUCK" files, but not "buck/" directories.
+# Note: These rules get inlined into ".gitignore" for apm publishing, git will
+# ignore "buck/" directories without this exclusion on case-insensitive Macs.
+BUCK
+!buck/
