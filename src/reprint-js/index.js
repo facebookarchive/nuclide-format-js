@@ -12,9 +12,10 @@
 import type {Context, Lines, Output, Print} from './types/common';
 import type Options from './options/Options';
 
-import DefaultOptions from './options/DefaultOptions';
 import Immutable from 'immutable';
 import * as babel from 'babel-core';
+
+import DefaultOptions from './options/DefaultOptions';
 import flatten from './utils/flatten';
 import getInvalidLeadingComments from './utils/getInvalidLeadingComments';
 import getInvalidTrailingComments from './utils/getInvalidTrailingComments';

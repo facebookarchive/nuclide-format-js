@@ -9,24 +9,17 @@
  * the root directory of this source tree.
  */
 
-import type {SourceOptions} from '../../nuclide-format-js-common/lib/options/SourceOptions';
+import type {SourceOptions} from '../common/options/SourceOptions';
 
-import featureConfig from '../../commons-atom/featureConfig';
-import {track} from '../../nuclide-analytics';
-import {updateCursor} from '../../nuclide-update-cursor';
-import {getLogger} from '../../nuclide-logging';
-
-const logger = getLogger();
+import updateCursor from '../update-cursor';
 
 async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise<void> {
   let editor = editor_;
   editor = editor || atom.workspace.getActiveTextEditor();
   if (!editor) {
-    logger.info('- format-js: No active text editor');
+    console.log('- format-js: No active text editor');
     return;
   }
-
-  track('format-js-formatCode');
 
   // Save things
   const buffer = editor.getBuffer();
@@ -34,8 +27,8 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   let source = oldSource;
 
   // Reprint transform.
-  if (featureConfig.get('nuclide-format-js.reprint')) {
-    const {reprint} = require('../../nuclide-reprint-js');
+  if (atom.config.get('nuclide-format-js.reprint')) {
+    const reprint = require('../reprint-js');
     // $FlowFixMe(kad) -- this seems to conflate an class instance with an ordinary object.
     const reprintResult = reprint(source, {
       maxLineLength: 80,
@@ -47,7 +40,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
 
   // Auto-require transform.
   // TODO: Add a limit so the transform is not run on files over a certain size.
-  const {transform} = require('../../nuclide-format-js-common');
+  const {transform} = require('../common');
   source = transform(source, options);
 
   // Update the source and position after all transforms are done. Do nothing
@@ -63,7 +56,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   editor.setCursorBufferPosition([row, column]);
 
   // Save the file if that option is specified.
-  if (featureConfig.get('nuclide-format-js.saveAfterRun')) {
+  if (atom.config.get('nuclide-format-js.saveAfterRun')) {
     editor.save();
   }
 }

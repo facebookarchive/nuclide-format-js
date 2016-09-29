@@ -11,8 +11,9 @@
 
 import type {SourceOptions} from './options/SourceOptions';
 
-import Options from './options/Options';
 import jscs from 'jscodeshift';
+
+import Options from './options/Options';
 import nuclideTransform from './nuclide/transform';
 import printRoot from './utils/printRoot';
 import requiresTransform from './requires/transform';

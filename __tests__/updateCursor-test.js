@@ -9,9 +9,9 @@
  * the root directory of this source tree.
  */
 
-import getPosition from '../lib/getPosition';
+import getPosition from '../src/update-cursor/getPosition';
 import invariant from 'assert';
-import updateCursor from '../lib/updateCursor';
+import updateCursor from '../src/update-cursor';
 
 describe('updateCursor', () => {
   it('should work for a simple test case', () => {
