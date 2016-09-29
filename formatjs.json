@@ -6,7 +6,8 @@
   ],
   "aliases": [
     "babel", "babel-core",
-    "invariant", "assert"
+    "invariant", "assert",
+    "jscs", "jscodeshift"
   ],
   "aliasesToRelativize": [],
   "builtIns": [
