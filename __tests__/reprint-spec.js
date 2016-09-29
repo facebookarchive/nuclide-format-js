@@ -11,7 +11,7 @@
 
 import fs from 'fs';
 import fsPromise from '../../commons-node/fsPromise';
-import {reprint} from '..';
+import reprint from '../src/reprint-js';
 
 // Helpful for debugging.
 const only = new Set([

@@ -9,11 +9,11 @@
  * the root directory of this source tree.
  */
 
-import DefaultModuleMap from '../lib/state/DefaultModuleMap';
+import DefaultModuleMap from '../src/common/state/DefaultModuleMap';
 import jscs from 'jscodeshift';
-import printRoot from '../lib/utils/printRoot';
+import printRoot from '../src/common/utils/printRoot';
 import fsPromise from '../../commons-node/fsPromise';
-import requiresTransform from '../lib/requires/transform';
+import requiresTransform from '../src/common/requires/transform';
 
 describe('options', () => {
   it('should respect blacklist options', () => {
