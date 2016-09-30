@@ -9,6 +9,8 @@
  * the root directory of this source tree.
  */
 
+/* globals atom */
+
 import type {SourceOptions} from '../common/options/SourceOptions';
 
 import updateCursor from '../update-cursor';
@@ -17,6 +19,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   let editor = editor_;
   editor = editor || atom.workspace.getActiveTextEditor();
   if (!editor) {
+    // eslint-disable-next-line no-console
     console.log('- format-js: No active text editor');
     return;
   }

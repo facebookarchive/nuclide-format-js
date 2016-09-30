@@ -9,6 +9,8 @@
  * the root directory of this source tree.
  */
 
+/* globals atom */
+
 import type {SourceOptions} from '../common/options/SourceOptions';
 import type {Settings} from './settings';
 

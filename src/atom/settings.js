@@ -9,6 +9,8 @@
  * the root directory of this source tree.
  */
 
+/* globals atom */
+
 import type ModuleMap from '../common/state/ModuleMap';
 import type {SourceOptions} from '../common/options/SourceOptions';
 import type {TransformKey} from '../common/types/transforms';
