@@ -13,8 +13,8 @@ import DefaultModuleMap from '../src/common/state/DefaultModuleMap';
 
 import jscodeshift from 'jscodeshift';
 import printRoot from '../src/common/utils/printRoot';
-import fsPromise from '../../commons-node/fsPromise';
 import requiresTransform from '../src/common/requires/transform';
+import fs from 'fs';
 
 const TESTS = [
   'add-array-expressions',
@@ -73,6 +73,14 @@ const SOURCE_OPTIONS = {
   moduleMap: DefaultModuleMap,
 };
 
+function readFileP(filename: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (err, data) => {
+      err ? reject(err) : resolve(data);
+    });
+  });
+}
+
 describe('requiresTransform', () => {
   TESTS.forEach(name => {
     it(`should ${name}`, () => {
@@ -80,13 +88,13 @@ describe('requiresTransform', () => {
       const expectedPath = 'spec/fixtures/requires/' + name + '.expected';
 
       waitsForPromise(async () => {
-        const test = await fsPromise.readFile(testPath, 'utf8');
+        const test = await readFileP(testPath);
 
         const root = jscodeshift(test);
         requiresTransform(root, SOURCE_OPTIONS);
         const actual = printRoot(root);
 
-        const expected = await fsPromise.readFile(expectedPath, 'utf8');
+        const expected = await readFileP(expectedPath);
         expect(actual).toBe(expected);
       });
     });

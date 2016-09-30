@@ -12,15 +12,23 @@
 import DefaultModuleMap from '../src/common/state/DefaultModuleMap';
 import jscs from 'jscodeshift';
 import printRoot from '../src/common/utils/printRoot';
-import fsPromise from '../../commons-node/fsPromise';
 import requiresTransform from '../src/common/requires/transform';
+import fs from 'fs';
+
+function readFileP(filename: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (err, data) => {
+      err ? reject(err) : resolve(data);
+    });
+  });
+}
 
 describe('options', () => {
   it('should respect blacklist options', () => {
     const testPath = 'spec/fixtures/options/respect-blacklist.test';
     const expectedPath = 'spec/fixtures/options/respect-blacklist.expected';
     waitsForPromise(async () => {
-      const test = await fsPromise.readFile(testPath, 'utf8');
+      const test = await readFileP(testPath);
 
       const root = jscs(test);
       requiresTransform(root, {
@@ -29,7 +37,7 @@ describe('options', () => {
       });
       const actual = printRoot(root);
 
-      const expected = await fsPromise.readFile(expectedPath, 'utf8');
+      const expected = await readFileP(expectedPath);
       expect(actual).toBe(expected);
     });
   });

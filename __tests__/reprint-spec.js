@@ -10,8 +10,15 @@
  */
 
 import fs from 'fs';
-import fsPromise from '../../commons-node/fsPromise';
 import reprint from '../src/reprint-js';
+
+function readFileP(filename: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, 'utf8', (err, data) => {
+      err ? reject(err) : resolve(data);
+    });
+  });
+}
 
 // Helpful for debugging.
 const only = new Set([
@@ -38,9 +45,9 @@ describe('reprint', () => {
       const testPath = 'spec/fixtures/' + name + '.test';
       const expectedPath = 'spec/fixtures/' + name + '.expected';
       waitsForPromise(async () => {
-        const fileContents = await fsPromise.readFile(testPath, 'utf8');
+        const fileContents = await readFileP(testPath);
         const actual = reprint(fileContents).source;
-        const expected = await fsPromise.readFile(expectedPath, 'utf8');
+        const expected = await readFileP(expectedPath);
         // Helpful for debugging
         // firstDifference(actual, expected);
         expect(actual).toBe(expected);
