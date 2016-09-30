@@ -1,5 +1,7 @@
 # nuclide-format-js
 
+[![Build Status](https://travis-ci.org/facebooknuclide/nuclide-format-js.svg?branch=master)](https://travis-ci.org/facebooknuclide/nuclide-format-js)
+
 This feature is a collection of codemods that automatically clean up different aspects of code so
 that you do not have to worry about every little formatting detail. Right now all of the codemods
 live in `src/common` feature.
