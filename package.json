@@ -5,11 +5,14 @@
   "keywords": [],
   "homepage": "https://nuclide.io/",
   "license": "SEE LICENSE IN LICENSE",
-  "main": "./src/atom/index.js",
+  "main": "./lib/atom/index.js",
   "repository": "https://github.com/facebooknuclide/nuclide-format-js",
   "scripts": {
+    "build": "npm run clean && babel src --out-dir lib",
+    "clean": "rm -rf lib",
     "lint": "flow check --show-all-errors && eslint .",
-    "test": "npm run lint && jest"
+    "test": "npm run lint && jest",
+    "watch": "npm run clean && babel src --out-dir lib --watch"
   },
   "dependencies": {
     "babel-core": "5.8.38",
@@ -18,6 +21,7 @@
   },
   "devDependencies": {
     "ast-types-flow": "0.0.7",
+    "babel": "5.8.38",
     "babel-eslint": "6.1.2",
     "eslint": "3.5.0",
     "eslint-plugin-babel": "3.3.0",

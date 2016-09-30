@@ -1,6 +1,7 @@
 [include]
 
 [ignore]
+<PROJECT_ROOT>/lib/.*
 
 [libs]
 ./interfaces/
