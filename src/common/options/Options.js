@@ -13,8 +13,9 @@ import type {ModuleMapOptions} from './ModuleMapOptions';
 import type {RequireOptions} from './RequireOptions';
 import type {SourceOptions} from './SourceOptions';
 
-import nuclideUri from '../../../commons-node/nuclideUri';
 import invariant from 'assert';
+import path from 'path';
+import url from 'url';
 
 /**
  * Valides the options used to construct a module map.
@@ -72,7 +73,13 @@ function validateSourceOptions(options: SourceOptions): void {
  * allow remote nuclide files.
  */
 function isAbsolute(sourcePath: string): boolean {
-  return nuclideUri.isAbsolute(nuclideUri.getPath(sourcePath));
+  if (sourcePath.startsWith('nuclide:/')) {
+    const parsedUri = url.parse(sourcePath);
+    invariant(parsedUri.path != null, 'uri path missing');
+    return path.isAbsolute(parsedUri.path);
+  } else {
+    return path.isAbsolute(sourcePath);
+  }
 }
 
 const Options = {
