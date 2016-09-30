@@ -1,6 +1,6 @@
 {
   "name": "nuclide-format-js",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "A collection of codemods to help auto format javascript",
   "keywords": [
     "codemod",
