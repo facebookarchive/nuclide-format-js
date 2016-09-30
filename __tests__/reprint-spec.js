@@ -42,17 +42,15 @@ function getTests() {
 
 describe('reprint', () => {
   getTests().forEach(name => {
-    it(`should ${name}`, () => {
+    it(`should ${name}`, async () => {
       const testPath = path.join(__dirname, 'fixtures/reprint/' + name + '.test');
       const expectedPath = path.join(__dirname, 'fixtures/reprint/' + name + '.expected');
-      waitsForPromise(async () => {
-        const fileContents = await readFileP(testPath);
-        const actual = reprint(fileContents).source;
-        const expected = await readFileP(expectedPath);
-        // Helpful for debugging
-        // firstDifference(actual, expected);
-        expect(actual).toBe(expected);
-      });
+      const fileContents = await readFileP(testPath);
+      const actual = reprint(fileContents).source;
+      const expected = await readFileP(expectedPath);
+      // Helpful for debugging
+      // firstDifference(actual, expected);
+      expect(actual).toBe(expected);
     });
   });
 });
