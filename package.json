@@ -29,6 +29,9 @@
     "atom": ">=1.10.2",
     "node": ">=5.10.0"
   },
+  "activationCommands": {
+    "atom-text-editor": "nuclide-format-js:format"
+  },
   "configSchema": {
     "runOnSave": {
       "title": "Run on save",
