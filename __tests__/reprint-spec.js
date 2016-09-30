@@ -11,6 +11,7 @@
 
 import fs from 'fs';
 import reprint from '../src/reprint-js';
+import path from 'path';
 
 function readFileP(filename: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -29,7 +30,7 @@ function getTests() {
   if (only.size > 0) {
     return only;
   }
-  const files = fs.readdirSync('./spec/fixtures/');
+  const files = fs.readdirSync(path.join(__dirname, 'fixtures/reprint/'));
   const tests = new Set();
   for (const file of files) {
     if (/\.test$/.test(file)) {
@@ -42,8 +43,8 @@ function getTests() {
 describe('reprint', () => {
   getTests().forEach(name => {
     it(`should ${name}`, () => {
-      const testPath = 'spec/fixtures/' + name + '.test';
-      const expectedPath = 'spec/fixtures/' + name + '.expected';
+      const testPath = path.join(__dirname, 'fixtures/reprint/' + name + '.test');
+      const expectedPath = path.join(__dirname, 'fixtures/reprint/' + name + '.expected');
       waitsForPromise(async () => {
         const fileContents = await readFileP(testPath);
         const actual = reprint(fileContents).source;

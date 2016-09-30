@@ -15,6 +15,7 @@ import jscodeshift from 'jscodeshift';
 import printRoot from '../src/common/utils/printRoot';
 import requiresTransform from '../src/common/requires/transform';
 import fs from 'fs';
+import path from 'path';
 
 const TESTS = [
   'add-array-expressions',
@@ -84,8 +85,8 @@ function readFileP(filename: string): Promise<string> {
 describe('requiresTransform', () => {
   TESTS.forEach(name => {
     it(`should ${name}`, () => {
-      const testPath = 'spec/fixtures/requires/' + name + '.test';
-      const expectedPath = 'spec/fixtures/requires/' + name + '.expected';
+      const testPath = path.join(__dirname, 'fixtures/requires/' + name + '.test');
+      const expectedPath = path.join(__dirname, 'fixtures/requires/' + name + '.expected');
 
       waitsForPromise(async () => {
         const test = await readFileP(testPath);
