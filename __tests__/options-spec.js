@@ -25,21 +25,19 @@ function readFileP(filename: string): Promise<string> {
 }
 
 describe('options', () => {
-  it('should respect blacklist options', () => {
+  it('should respect blacklist options', async () => {
     const testPath = path.join(__dirname, 'fixtures/options/respect-blacklist.test');
     const expectedPath = path.join(__dirname, 'fixtures/options/respect-blacklist.expected');
-    waitsForPromise(async () => {
-      const test = await readFileP(testPath);
+    const test = await readFileP(testPath);
 
-      const root = jscs(test);
-      requiresTransform(root, {
-        moduleMap: DefaultModuleMap,
-        blacklist: new Set(['requires.removeUnusedRequires']),
-      });
-      const actual = printRoot(root);
-
-      const expected = await readFileP(expectedPath);
-      expect(actual).toBe(expected);
+    const root = jscs(test);
+    requiresTransform(root, {
+      moduleMap: DefaultModuleMap,
+      blacklist: new Set(['requires.removeUnusedRequires']),
     });
+    const actual = printRoot(root);
+
+    const expected = await readFileP(expectedPath);
+    expect(actual).toBe(expected);
   });
 });

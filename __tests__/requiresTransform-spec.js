@@ -84,20 +84,18 @@ function readFileP(filename: string): Promise<string> {
 
 describe('requiresTransform', () => {
   TESTS.forEach(name => {
-    it(`should ${name}`, () => {
+    it(`should ${name}`, async () => {
       const testPath = path.join(__dirname, 'fixtures/requires/' + name + '.test');
       const expectedPath = path.join(__dirname, 'fixtures/requires/' + name + '.expected');
 
-      waitsForPromise(async () => {
-        const test = await readFileP(testPath);
+      const test = await readFileP(testPath);
 
-        const root = jscodeshift(test);
-        requiresTransform(root, SOURCE_OPTIONS);
-        const actual = printRoot(root);
+      const root = jscodeshift(test);
+      requiresTransform(root, SOURCE_OPTIONS);
+      const actual = printRoot(root);
 
-        const expected = await readFileP(expectedPath);
-        expect(actual).toBe(expected);
-      });
+      const expected = await readFileP(expectedPath);
+      expect(actual).toBe(expected);
     });
   });
 });
