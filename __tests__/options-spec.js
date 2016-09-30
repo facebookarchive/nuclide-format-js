@@ -14,6 +14,7 @@ import jscs from 'jscodeshift';
 import printRoot from '../src/common/utils/printRoot';
 import requiresTransform from '../src/common/requires/transform';
 import fs from 'fs';
+import path from 'path';
 
 function readFileP(filename: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -25,8 +26,8 @@ function readFileP(filename: string): Promise<string> {
 
 describe('options', () => {
   it('should respect blacklist options', () => {
-    const testPath = 'spec/fixtures/options/respect-blacklist.test';
-    const expectedPath = 'spec/fixtures/options/respect-blacklist.expected';
+    const testPath = path.join(__dirname, 'fixtures/options/respect-blacklist.test');
+    const expectedPath = path.join(__dirname, 'fixtures/options/respect-blacklist.expected');
     waitsForPromise(async () => {
       const test = await readFileP(testPath);
 
