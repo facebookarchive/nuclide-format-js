@@ -9,7 +9,7 @@
   ],
   "homepage": "https://nuclide.io/",
   "license": "SEE LICENSE IN LICENSE",
-  "main": "./lib/atom/index.js",
+  "main": "./lib/index.js",
   "repository": "https://github.com/facebooknuclide/nuclide-format-js",
   "scripts": {
     "build": "npm run clean && babel src --out-dir lib",
