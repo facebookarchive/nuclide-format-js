@@ -3,6 +3,7 @@
 [ignore]
 
 [libs]
+./interfaces/
 
 [options]
 experimental.const_params=true
