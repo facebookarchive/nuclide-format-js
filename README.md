@@ -44,3 +44,21 @@ Make sure to verify the requires that are added by this plugin and report any is
 is getting in your way when using this plugin you can generally work around it by modifying the
 plugin's settings. It's possible to adjust things like built-ins, aliases, and even blacklist
 particular transforms there.
+
+## releasing
+
+* Make sure that `master` is up-to-date.
+
+```sh
+# Bump the version number
+npm version patch --no-git-tag-version
+
+# Commit the version bump
+git add package.json
+git commit -m "$(node -p 'require("./package.json").version')"
+
+# Run the release script
+./tools/release.sh
+
+# Follow the printed instructions if everything looks good
+```
