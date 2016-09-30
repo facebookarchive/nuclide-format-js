@@ -45,6 +45,22 @@ is getting in your way when using this plugin you can generally work around it b
 plugin's settings. It's possible to adjust things like built-ins, aliases, and even blacklist
 particular transforms there.
 
+## developing
+
+```sh
+# Clone the repo
+git clone git@github.com:facebooknuclide/nuclide-format-js.git
+
+cd nuclide-format-js
+
+# To use as an Atom package
+apm link
+
+# Install dependencies and start the transpiler watcher
+npm install
+npm run watch
+```
+
 ## releasing
 
 * Make sure that `master` is up-to-date.
