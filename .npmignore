@@ -1,6 +1,8 @@
+/.babelrc
 /.eslintignore
 /.eslintrc.js
 /.flowconfig
+/.travis.yml
 /CONTRIBUTING.md
 /ISSUE_TEMPLATE.md
 /__tests__
@@ -8,3 +10,4 @@
 /formatjs.json
 /interfaces
 /src
+/tools
