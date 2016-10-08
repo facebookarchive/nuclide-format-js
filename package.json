@@ -31,7 +31,7 @@
     "eslint-plugin-babel": "3.3.0",
     "eslint-plugin-flowtype": "2.6.1",
     "eslint-plugin-prefer-object-spread": "1.1.0",
-    "flow-bin": "0.32.0",
+    "flow-bin": "0.33.0",
     "jest": "15.1.1"
   },
   "engines": {
