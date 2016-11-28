@@ -75,6 +75,7 @@ module.exports = new Set([
   'describe',
   'expect',
   'it',
+  'test',
   'jest',
   'waitsForPromise',
   'jasmine',
