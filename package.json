@@ -32,14 +32,17 @@
     "eslint-plugin-flowtype": "2.6.1",
     "eslint-plugin-prefer-object-spread": "1.1.0",
     "flow-bin": "0.33.0",
-    "jest": "16.0.1"
+    "jest": "17.0.3"
   },
   "engines": {
     "atom": ">=1.10.2",
     "node": ">=5.10.0"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/tools/jestPreprocessor.js",
+    "transform": {
+      ".*": "<rootDir>/tools/jestPreprocessor.js"
+    },
+    "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "__tests__/fixtures/"
     ]
