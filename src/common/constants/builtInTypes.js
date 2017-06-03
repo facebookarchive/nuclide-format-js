@@ -24,5 +24,6 @@ module.exports = new Set([
   'Iterable',
   'Map',
   'ReactElement',
+  'ReactNode',
   'Set',
 ]);

@@ -46,6 +46,7 @@ const TESTS = [
   'demote-requires',
   'ignore-arbitrary-new-lines',
   'ignore-array-pattern-elements',
+  'ignore-builtin-types',
   'ignore-comments-with-no-requires',
   'ignore-declared-jsx',
   'ignore-function-params',
