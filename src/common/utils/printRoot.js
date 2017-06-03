@@ -14,7 +14,11 @@ import NewLine from './NewLine';
 
 function printRoot(root: Collection): string {
   // Print the new source.
-  let output = root.toSource({quote: 'single', trailingComma: true});
+  let output = root.toSource({
+    objectCurlySpacing: false,
+    quote: 'single',
+    trailingComma: true,
+  });
 
   // Remove all new lines between require fences that are not explicitly added
   // by the NewLine module.
