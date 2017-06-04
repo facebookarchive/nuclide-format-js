@@ -11,6 +11,7 @@
 import type {SourceOptions} from './options/SourceOptions';
 
 import jscs from 'jscodeshift';
+import getParser from 'jscodeshift/dist/getParser';
 
 import Options from './options/Options';
 import nuclideTransform from './nuclide/transform';
@@ -21,7 +22,7 @@ function transform(source: string, options: SourceOptions): string {
   Options.validateSourceOptions(options);
 
   // Parse the source code once, then reuse the root node
-  const root = jscs(source);
+  const root = jscs(source, {parser: getParser('babylon')});
 
   // Add use-strict
   // TODO: implement this, make it configurable

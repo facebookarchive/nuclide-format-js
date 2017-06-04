@@ -37,6 +37,18 @@ const CONFIG: Array<ConfigEntry> = [
     getNodes: path => [path.node.rest].concat(path.node.params),
   },
 
+  // class {foo(...rest) {}}, class method
+  {
+    searchTerms: [jscs.ClassMethod],
+    getNodes: path => path.node.params,
+  },
+
+  // x = {foo(...rest) {}}, object method
+  {
+    searchTerms: [jscs.ObjectMethod],
+    getNodes: path => path.node.params,
+  },
+
   // var foo;
   {
     searchTerms: [jscs.VariableDeclaration],

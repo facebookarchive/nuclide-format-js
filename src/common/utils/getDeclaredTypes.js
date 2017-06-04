@@ -72,7 +72,7 @@ function getDeclaredTypes(
       .forEach(path => {
         const nodes = config.getNodes(path);
         nodes.forEach(node => {
-          if (jscs.Identifier.check(node)) {
+          if (jscs.Identifier.check(node) || jscs.TypeParameter.check(node)) {
             ids.add(node.name);
           }
         });

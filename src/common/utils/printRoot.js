@@ -39,6 +39,9 @@ function printRoot(root: Collection): string {
   // Remove new lines at the start.
   output = output.replace(/^\n{1,}/, '');
 
+  // Remove spurious semicolon after 'use strict'
+  output = output.replace("'use strict';;", "'use strict';");
+
   // Make sure there is a new line at the end.
   if (!/^[\w\W]*\n$/.test(output)) {
     output += '\n';

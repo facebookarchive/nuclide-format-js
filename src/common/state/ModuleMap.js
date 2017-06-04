@@ -174,14 +174,14 @@ class ModuleMap {
 
     if (destructure && options.typeImport) {
       // import type {foo} from 'foo';
-      tmp = statement`import type {_} from '_'`;
+      tmp = statement`import type {_} from '_';\n`;
       tmp.specifiers[0].imported = idNode;
       tmp.specifiers[0].local = idNode;
       tmp.source = literalNode;
       return tmp;
     } else if (!destructure && options.typeImport) {
       // import type foo from 'foo';
-      tmp = statement`import type _ from '_'`;
+      tmp = statement`import type _ from '_';\n`;
       tmp.specifiers[0].id = idNode;
       tmp.specifiers[0].local = idNode;
       tmp.source = literalNode;
