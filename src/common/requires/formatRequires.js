@@ -38,8 +38,8 @@ const CONFIG: Array<ConfigEntry> = [
       isGlobal,
     ],
     comparator: (node1, node2) => compareStrings(
-      node1.specifiers[0].local.name,
-      node2.specifiers[0].local.name,
+      node1.source.value,
+      node2.source.value,
     ),
     mapper: node => reprintRequire(node),
   },
