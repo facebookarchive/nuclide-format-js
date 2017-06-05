@@ -12,7 +12,7 @@ import DefaultModuleMap from '../src/common/state/DefaultModuleMap';
 
 import jscodeshift from 'jscodeshift';
 import printRoot from '../src/common/utils/printRoot';
-import requiresTransform from '../src/common/requires/transform';
+import transform from '../src/common/transform';
 import fs from 'fs';
 import path from 'path';
 
@@ -89,11 +89,7 @@ describe('requiresTransform', () => {
       const expectedPath = path.join(__dirname, 'fixtures/requires/' + name + '.expected');
 
       const test = await readFileP(testPath);
-
-      const root = jscodeshift(test);
-      requiresTransform(root, SOURCE_OPTIONS);
-      const actual = printRoot(root);
-
+      const actual = transform(test, SOURCE_OPTIONS);
       const expected = await readFileP(expectedPath);
       expect(actual).toBe(expected);
     });

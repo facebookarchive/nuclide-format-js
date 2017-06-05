@@ -19,7 +19,8 @@ function getNamesFromID(node: Node): Set<string> {
   } else if (
     jscs.RestElement.check(node) ||
     jscs.SpreadElement.check(node) ||
-    jscs.SpreadProperty.check(node)
+    jscs.SpreadProperty.check(node) ||
+    jscs.RestProperty.check(node)
   ) {
     for (const id of getNamesFromID(node.argument)) {
       ids.add(id);
