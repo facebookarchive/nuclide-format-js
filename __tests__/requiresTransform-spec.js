@@ -50,6 +50,7 @@ const TESTS = [
   'ignore-comments-with-no-requires',
   'ignore-declared-jsx',
   'ignore-function-params',
+  'ignore-flow-utility-types',
   'ignore-nested-object-patterns',
   'ignore-react-when-using-jsx',
   'ignore-requires-in-blocks',

@@ -15,6 +15,31 @@
  * should only be for declared types that are not actual modules.
  */
 module.exports = new Set([
+  // Flow built-in utility types
+  '$Abstract',
+  '$All',
+  '$Diff',
+  '$Either',
+  '$Enum',
+  '$Exact',
+  '$Exports',
+  '$Flow',
+  '$Keys',
+  '$NonMaybeType',
+  '$ObjMap',
+  '$ObjMapi',
+  '$Pred',
+  '$PropertyType',
+  '$ReadOnlyArray',
+  '$Refine',
+  '$Shape',
+  '$Subtype',
+  '$Supertype',
+  '$Tainted',
+  '$TupleMap',
+  '$Type',
+  'Class',
+  // Other FB/browser builtins
   '$jsx',
   'AdAccountID',
   'FBID',
