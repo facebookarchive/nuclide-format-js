@@ -12,6 +12,7 @@ import type {Collection, Node, NodePath} from '../types/ast';
 import type {SourceOptions} from '../options/SourceOptions';
 
 import jscs from 'jscodeshift';
+import matchNode from 'jscodeshift/dist/matchNode';
 
 type ConfigEntry = {
   searchTerms: [any, ?Object],
@@ -64,20 +65,26 @@ function getDeclaredTypes(
   // Start with the built in types that are always declared.
   const {moduleMap} = options;
   const ids = new Set(moduleMap.getBuiltInTypes());
+  const visitor = {};
   CONFIG.forEach(config => {
-    root
-      .find(config.searchTerms[0], config.searchTerms[1])
-      .filter(path => (filters ? filters.every(filter => filter(path)) : true))
-      .filter(path => config.filters.every(filter => filter(path)))
-      .forEach(path => {
+    visitor[`visit${config.searchTerms[0]}`] = function(path) {
+      const nodeShape = config.searchTerms[1];
+      if (
+        (!filters || filters.every(filter => filter(path))) &&
+        (!nodeShape || matchNode(path.value, nodeShape)) &&
+        config.filters.every(filter => filter(path))
+      ) {
         const nodes = config.getNodes(path);
         nodes.forEach(node => {
           if (jscs.Identifier.check(node) || jscs.TypeParameter.check(node)) {
             ids.add(node.name);
           }
         });
-      });
+      }
+      this.traverse(path);
+    };
   });
+  jscs.types.visit(root.nodes()[0], visitor);
   return ids;
 }
 

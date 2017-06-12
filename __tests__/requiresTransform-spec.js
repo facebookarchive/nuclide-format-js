@@ -10,8 +10,6 @@
 
 import DefaultModuleMap from '../src/common/state/DefaultModuleMap';
 
-import jscodeshift from 'jscodeshift';
-import printRoot from '../src/common/utils/printRoot';
 import transform from '../src/common/transform';
 import fs from 'fs';
 import path from 'path';

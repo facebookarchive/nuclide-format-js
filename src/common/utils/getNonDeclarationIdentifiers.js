@@ -207,19 +207,22 @@ const CONFIG: Array<ConfigEntry> = [
  */
 function getNonDeclarationIdentifiers(root: Collection): Set<string> {
   const ids = new Set();
+  const visitor = {};
+
   CONFIG.forEach(config => {
-    root
-      .find(config.searchTerms[0], config.searchTerms[1])
-      .forEach(path => {
-        const nodes = config.getNodes(path);
-        nodes.forEach(node => {
-          const names = getNamesFromID(node);
-          for (const name of names) {
-            ids.add(name);
-          }
-        });
+    visitor[`visit${config.searchTerms[0]}`] = function(path) {
+      const nodes = config.getNodes(path);
+      nodes.forEach(node => {
+        const names = getNamesFromID(node);
+        for (const name of names) {
+          ids.add(name);
+        }
       });
+      this.traverse(path);
+    }
   });
+
+  jscs.types.visit(root.nodes()[0], visitor);
   return ids;
 }
 
