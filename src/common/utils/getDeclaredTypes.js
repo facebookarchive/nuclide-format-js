@@ -15,27 +15,26 @@ import jscs from 'jscodeshift';
 import matchNode from 'jscodeshift/dist/matchNode';
 
 type ConfigEntry = {
-  searchTerms: [any, ?Object],
+  nodeType: string,
   filters: Array<(path: NodePath) => boolean>,
   getNodes: (path: NodePath) => Array<Node>,
 };
 
 const CONFIG: Array<ConfigEntry> = [
   {
-    searchTerms: [
-      jscs.ImportDeclaration,
-      {importKind: 'type'},
+    nodeType: jscs.ImportDeclaration,
+    filters: [
+      path => path.value.importKind === 'type',
     ],
-    filters: [],
     getNodes: path => path.node.specifiers.map(specifier => specifier.local),
   },
   {
-    searchTerms: [jscs.TypeAlias],
+    nodeType: jscs.TypeAlias,
     filters: [],
     getNodes: path => [path.node.id],
   },
   {
-    searchTerms: [jscs.TypeParameterDeclaration],
+    nodeType: jscs.TypeParameterDeclaration,
     filters: [],
     getNodes: path => path.node.params,
   },
@@ -43,7 +42,7 @@ const CONFIG: Array<ConfigEntry> = [
   // TODO: remove these, they should be covered by TypeParameterDeclaration
   // but there is a bug in jscodeshift
   {
-    searchTerms: [jscs.ClassDeclaration],
+    nodeType: jscs.ClassDeclaration,
     filters: [
       path => (
         path.node.typeParameters &&
@@ -67,11 +66,9 @@ function getDeclaredTypes(
   const ids = new Set(moduleMap.getBuiltInTypes());
   const visitor = {};
   CONFIG.forEach(config => {
-    visitor[`visit${config.searchTerms[0]}`] = function(path) {
-      const nodeShape = config.searchTerms[1];
+    visitor[`visit${config.nodeType}`] = function(path) {
       if (
         (!filters || filters.every(filter => filter(path))) &&
-        (!nodeShape || matchNode(path.value, nodeShape)) &&
         config.filters.every(filter => filter(path))
       ) {
         const nodes = config.getNodes(path);

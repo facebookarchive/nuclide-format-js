@@ -16,11 +16,12 @@ import {compareStrings, isCapitalized} from '../utils/StringUtils';
 import hasOneRequireDeclaration from '../utils/hasOneRequireDeclaration';
 import isGlobal from '../utils/isGlobal';
 import isRequireExpression from '../utils/isRequireExpression';
+import isTypeImport from '../utils/isTypeImport';
 import jscs from 'jscodeshift';
 import reprintRequire from '../utils/reprintRequire';
 
 type ConfigEntry = {
-  searchTerms: [any, ?Object],
+  nodeType: string,
   filters: Array<(path: NodePath) => boolean>,
   comparator: (node1: Node, node2: Node) => number,
   mapper: (node: Node) => Node,
@@ -30,13 +31,8 @@ type ConfigEntry = {
 const CONFIG: Array<ConfigEntry> = [
   // Handle type imports
   {
-    searchTerms: [
-      jscs.ImportDeclaration,
-      {importKind: 'type'},
-    ],
-    filters: [
-      isGlobal,
-    ],
+    nodeType: jscs.ImportDeclaration,
+    filters: [isGlobal, isTypeImport],
     comparator: (node1, node2) => compareStrings(
       node1.source.value,
       node2.source.value,
@@ -46,7 +42,7 @@ const CONFIG: Array<ConfigEntry> = [
 
   // Handle side effects, e.g: `require('monkey-patches');`
   {
-    searchTerms: [jscs.ExpressionStatement],
+    nodeType: jscs.ExpressionStatement,
     filters: [
       isGlobal,
       path => isRequireExpression(path.node),
@@ -60,7 +56,7 @@ const CONFIG: Array<ConfigEntry> = [
 
   // Handle UpperCase requires, e.g: `require('UpperCase');`
   {
-    searchTerms: [jscs.VariableDeclaration],
+    nodeType: jscs.VariableDeclaration,
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
@@ -75,7 +71,7 @@ const CONFIG: Array<ConfigEntry> = [
 
   // Handle lowerCase requires, e.g: `require('lowerCase');`
   {
-    searchTerms: [jscs.VariableDeclaration],
+    nodeType: jscs.VariableDeclaration,
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
@@ -114,7 +110,7 @@ function formatRequires(root: Collection): void {
   // Create groups of requires from each config
   const nodeGroups = CONFIG.map(config => {
     const paths = root
-      .find(config.searchTerms[0], config.searchTerms[1])
+      .find(config.nodeType)
       .filter(path => config.filters.every(filter => filter(path)));
 
     // Save the underlying nodes before removing the paths

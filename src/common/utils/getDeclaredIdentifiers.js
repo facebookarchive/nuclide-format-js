@@ -15,7 +15,7 @@ import getNamesFromID from './getNamesFromID';
 import jscs from 'jscodeshift';
 
 type ConfigEntry = {
-  searchTerms: [any, ?Object],
+  nodeType: string,
   getNodes: (path: NodePath) => Array<Node>,
 };
 
@@ -27,55 +27,55 @@ type ConfigEntry = {
 const CONFIG: Array<ConfigEntry> = [
   // function foo(...rest) {}
   {
-    searchTerms: [jscs.FunctionDeclaration],
+    nodeType: jscs.FunctionDeclaration,
     getNodes: path => [path.node.id, path.node.rest].concat(path.node.params),
   },
 
   // foo(...rest) {}, in a class body for example
   {
-    searchTerms: [jscs.FunctionExpression],
+    nodeType: jscs.FunctionExpression,
     getNodes: path => [path.node.rest].concat(path.node.params),
   },
 
   // class {foo(...rest) {}}, class method
   {
-    searchTerms: [jscs.ClassMethod],
+    nodeType: jscs.ClassMethod,
     getNodes: path => path.node.params,
   },
 
   // x = {foo(...rest) {}}, object method
   {
-    searchTerms: [jscs.ObjectMethod],
+    nodeType: jscs.ObjectMethod,
     getNodes: path => path.node.params,
   },
 
   // var foo;
   {
-    searchTerms: [jscs.VariableDeclaration],
+    nodeType: jscs.VariableDeclaration,
     getNodes: path => path.node.declarations.map(declaration => declaration.id),
   },
 
   // class foo {}
   {
-    searchTerms: [jscs.ClassDeclaration],
+    nodeType: jscs.ClassDeclaration,
     getNodes: path => [path.node.id],
   },
 
   // (foo, ...rest) => {}
   {
-    searchTerms: [jscs.ArrowFunctionExpression],
+    nodeType: jscs.ArrowFunctionExpression,
     getNodes: path => [path.node.rest].concat(path.node.params),
   },
 
   // try {} catch (foo) {}
   {
-    searchTerms: [jscs.CatchClause],
+    nodeType: jscs.CatchClause,
     getNodes: path => [path.node.param],
   },
 
   // function foo(a = b) {}
   {
-    searchTerms: [jscs.AssignmentPattern],
+    nodeType: jscs.AssignmentPattern,
     getNodes: path => [path.node.left],
   },
 ];
@@ -93,7 +93,7 @@ function getDeclaredIdentifiers(
   const ids = new Set(moduleMap.getBuiltIns());
   const visitor = {};
   CONFIG.forEach(config => {
-    visitor[`visit${config.searchTerms[0]}`] = function(path) {
+    visitor[`visit${config.nodeType}`] = function(path) {
       if (!filters || filters.every(filter => filter(path))) {
         const nodes = config.getNodes(path);
         nodes.forEach(node => {
