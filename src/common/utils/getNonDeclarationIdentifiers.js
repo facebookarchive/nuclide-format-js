@@ -14,7 +14,7 @@ import getNamesFromID from './getNamesFromID';
 import jscs from 'jscodeshift';
 
 type ConfigEntry = {
-  searchTerms: [any, ?Object],
+  nodeType: string,
   getNodes: (path: NodePath) => Array<Node>,
 };
 
@@ -27,92 +27,92 @@ const REACT_NODE = jscs.identifier('React');
 const CONFIG: Array<ConfigEntry> = [
   // foo;
   {
-    searchTerms: [jscs.ExpressionStatement],
+    nodeType: jscs.ExpressionStatement,
     getNodes: path => [path.node.expression],
   },
 
   // foo(bar);
   {
-    searchTerms: [jscs.CallExpression],
+    nodeType: jscs.CallExpression,
     getNodes: path => [path.node.callee].concat(path.node.arguments),
   },
 
   // foo.declared;
   {
-    searchTerms: [jscs.MemberExpression],
+    nodeType: jscs.MemberExpression,
     getNodes: path => [path.node.object],
   },
 
   // foo = bar;
   {
-    searchTerms: [jscs.AssignmentExpression],
+    nodeType: jscs.AssignmentExpression,
     getNodes: path => [path.node.left, path.node.right],
   },
 
   // class declared extends foo {}
   {
-    searchTerms: [jscs.ClassDeclaration],
+    nodeType: jscs.ClassDeclaration,
     getNodes: path => [path.node.superClass],
   },
 
   // var declared = foo;
   {
-    searchTerms: [jscs.VariableDeclarator],
+    nodeType: jscs.VariableDeclarator,
     getNodes: path => [path.node.init],
   },
 
   // switch (declared) { case foo: break; }
   {
-    searchTerms: [jscs.SwitchCase],
+    nodeType: jscs.SwitchCase,
     getNodes: path => [path.node.test],
   },
 
   // {declared: foo}
   {
-    searchTerms: [jscs.ObjectExpression],
+    nodeType: jscs.ObjectExpression,
     // Generally props have a value, if it is a spread property it doesn't.
     getNodes: path => path.node.properties.map(prop => prop.value || prop),
   },
 
   // return foo;
   {
-    searchTerms: [jscs.ReturnStatement],
+    nodeType: jscs.ReturnStatement,
     getNodes: path => [path.node.argument],
   },
 
   // if (foo) {}
   {
-    searchTerms: [jscs.IfStatement],
+    nodeType: jscs.IfStatement,
     getNodes: path => [path.node.test],
   },
 
   // switch (foo) {}
   {
-    searchTerms: [jscs.SwitchStatement],
+    nodeType: jscs.SwitchStatement,
     getNodes: path => [path.node.discriminant],
   },
 
   // !foo;
   {
-    searchTerms: [jscs.UnaryExpression],
+    nodeType: jscs.UnaryExpression,
     getNodes: path => [path.node.argument],
   },
 
   // foo || bar;
   {
-    searchTerms: [jscs.BinaryExpression],
+    nodeType: jscs.BinaryExpression,
     getNodes: path => [path.node.left, path.node.right],
   },
 
   // foo < bar;
   {
-    searchTerms: [jscs.LogicalExpression],
+    nodeType: jscs.LogicalExpression,
     getNodes: path => [path.node.left, path.node.right],
   },
 
   // foo ? bar : baz;
   {
-    searchTerms: [jscs.ConditionalExpression],
+    nodeType: jscs.ConditionalExpression,
     getNodes: path => [
       path.node.test,
       path.node.alternate,
@@ -122,79 +122,79 @@ const CONFIG: Array<ConfigEntry> = [
 
   // new Foo()
   {
-    searchTerms: [jscs.NewExpression],
+    nodeType: jscs.NewExpression,
     getNodes: path => [path.node.callee].concat(path.node.arguments),
   },
 
   // foo++;
   {
-    searchTerms: [jscs.UpdateExpression],
+    nodeType: jscs.UpdateExpression,
     getNodes: path => [path.node.argument],
   },
 
   // <Element attribute={foo} />
   {
-    searchTerms: [jscs.JSXExpressionContainer],
+    nodeType: jscs.JSXExpressionContainer,
     getNodes: path => [path.node.expression],
   },
 
   // for (foo in bar) {}
   {
-    searchTerms: [jscs.ForInStatement],
+    nodeType: jscs.ForInStatement,
     getNodes: path => [path.node.left, path.node.right],
   },
 
   // for (foo of bar) {}
   {
-    searchTerms: [jscs.ForOfStatement],
+    nodeType: jscs.ForOfStatement,
     getNodes: path => [path.node.left, path.node.right],
   },
 
   // for (foo; bar; baz) {}
   {
-    searchTerms: [jscs.ForStatement],
+    nodeType: jscs.ForStatement,
     getNodes: path => [path.node.init, path.node.test, path.node.update],
   },
 
   // while (foo) {}
   {
-    searchTerms: [jscs.WhileStatement],
+    nodeType: jscs.WhileStatement,
     getNodes: path => [path.node.test],
   },
 
   // do {} while (foo)
   {
-    searchTerms: [jscs.DoWhileStatement],
+    nodeType: jscs.DoWhileStatement,
     getNodes: path => [path.node.test],
   },
 
   // [foo]
   {
-    searchTerms: [jscs.ArrayExpression],
+    nodeType: jscs.ArrayExpression,
     getNodes: path => path.node.elements,
   },
 
   // Special case. Any JSX elements will get transpiled to use React.
   {
-    searchTerms: [jscs.JSXOpeningElement],
+    nodeType: jscs.JSXOpeningElement,
     getNodes: path => [REACT_NODE],
   },
 
   // foo`something`
   {
-    searchTerms: [jscs.TaggedTemplateExpression],
+    nodeType: jscs.TaggedTemplateExpression,
     getNodes: path => [path.node.tag],
   },
 
   // `${bar}`
   {
-    searchTerms: [jscs.TemplateLiteral],
+    nodeType: jscs.TemplateLiteral,
     getNodes: path => path.node.expressions,
   },
 
   // function foo(a = b) {}
   {
-    searchTerms: [jscs.AssignmentPattern],
+    nodeType: jscs.AssignmentPattern,
     getNodes: path => [path.node.right],
   },
 ];
@@ -207,19 +207,22 @@ const CONFIG: Array<ConfigEntry> = [
  */
 function getNonDeclarationIdentifiers(root: Collection): Set<string> {
   const ids = new Set();
+  const visitor = {};
+
   CONFIG.forEach(config => {
-    root
-      .find(config.searchTerms[0], config.searchTerms[1])
-      .forEach(path => {
-        const nodes = config.getNodes(path);
-        nodes.forEach(node => {
-          const names = getNamesFromID(node);
-          for (const name of names) {
-            ids.add(name);
-          }
-        });
+    visitor[`visit${config.nodeType}`] = function(path) {
+      const nodes = config.getNodes(path);
+      nodes.forEach(node => {
+        const names = getNamesFromID(node);
+        for (const name of names) {
+          ids.add(name);
+        }
       });
+      this.traverse(path);
+    }
   });
+
+  jscs.types.visit(root.nodes()[0], visitor);
   return ids;
 }
 

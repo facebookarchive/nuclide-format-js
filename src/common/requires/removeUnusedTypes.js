@@ -15,12 +15,13 @@ import getDeclaredIdentifiers from '../utils/getDeclaredIdentifiers';
 import getDeclaredTypes from '../utils/getDeclaredTypes';
 import getNonDeclarationTypes from '../utils/getNonDeclarationTypes';
 import isGlobal from '../utils/isGlobal';
+import isTypeImport from '../utils/isTypeImport';
 import jscs from 'jscodeshift';
 
 const {match} = jscs;
 
 type ConfigEntry = {
-  searchTerms: [any, Object],
+  nodeType: string,
   filters: Array<(path: NodePath) => boolean>,
   getNames: (node: Node) => Array<string>,
 };
@@ -29,11 +30,8 @@ type ConfigEntry = {
 const CONFIG: Array<ConfigEntry> = [
   // import type Foo from 'Foo';
   {
-    searchTerms: [
-      jscs.ImportDeclaration,
-      {importKind: 'type'},
-    ],
-    filters: [isGlobal],
+    nodeType: jscs.ImportDeclaration,
+    filters: [isGlobal, isTypeImport],
     getNames: node => node.specifiers.map(specifier => specifier.local.name),
   },
 ];
@@ -49,7 +47,7 @@ function removeUnusedTypes(root: Collection, options: SourceOptions): void {
   // Remove things based on the config.
   CONFIG.forEach(config => {
     root
-      .find(config.searchTerms[0], config.searchTerms[1])
+      .find(config.nodeType)
       .filter(path => config.filters.every(filter => filter(path)))
       .filter(path => config.getNames(path.node).every(
         name => !used.has(name) || declared.has(name) || nonTypeImport.has(name),
