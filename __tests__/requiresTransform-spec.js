@@ -17,6 +17,7 @@ import path from 'path';
 const TESTS = [
   'add-array-expressions',
   'add-assignments',
+  'add-bare-function-argument-types',
   'add-classes',
   'add-common-aliases',
   'add-constructor-arguments',
