@@ -65,6 +65,7 @@ const TESTS = [
   'remove-unused-types',
   'respect-declaration-kind',
   'sort-aliases',
+  'sort-by-module-names',
   'sort-import-specifiers',
   'sort-imports',
   'sort-requires',
