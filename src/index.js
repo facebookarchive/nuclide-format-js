@@ -15,6 +15,5 @@ if (typeof atom !== 'undefined' && typeof atom.getCurrentWindow === 'function') 
 } else {
   module.exports = {
     ...require('./common'),
-    reprint: require('./reprint-js'),
   };
 }

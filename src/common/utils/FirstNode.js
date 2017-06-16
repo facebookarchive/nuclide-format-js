@@ -27,7 +27,7 @@ const FirstNode = {
   get(root: Collection): ?NodePath {
     let first;
     jscs.types.visit(root.nodes()[0], {
-      visitNode: function(path) {
+      visitNode(path) {
         if (isGlobal(path) && isValidFirstNode(path)) {
           if (!first) {
             first = path;
@@ -35,7 +35,7 @@ const FirstNode = {
           return false; // stop iterating the AST
         }
         this.traverse(path);
-      }
+      },
     });
     return first;
   },

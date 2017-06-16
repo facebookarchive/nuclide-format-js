@@ -219,7 +219,7 @@ function getNonDeclarationIdentifiers(root: Collection): Set<string> {
         }
       });
       this.traverse(path);
-    }
+    };
   });
 
   jscs.types.visit(root.nodes()[0], visitor);
