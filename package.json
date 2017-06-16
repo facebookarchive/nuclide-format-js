@@ -12,33 +12,42 @@
   "main": "./lib/index.js",
   "repository": "https://github.com/facebooknuclide/nuclide-format-js",
   "scripts": {
-    "build": "npm run clean && babel src --out-dir lib",
+    "build": "yarn run clean && babel src --out-dir lib",
     "clean": "rm -rf lib",
     "lint": "flow check --show-all-errors && eslint .",
-    "test": "npm run lint && jest",
-    "watch": "npm run clean && babel src --out-dir lib --watch"
+    "test": "yarn run lint && jest",
+    "watch": "yarn run clean && babel src --out-dir lib --watch"
   },
   "dependencies": {
-    "jscodeshift": "^0.3.31"
+    "jscodeshift": "^0.3.31",
+    "regenerator-runtime": "^0.10.5"
   },
   "devDependencies": {
-    "babel": "5.8.38",
+    "babel-cli": "^6.24.1",
     "babel-eslint": "6.1.2",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-stage-2": "^6.24.1",
     "eslint": "3.5.0",
     "eslint-plugin-babel": "3.3.0",
     "eslint-plugin-flowtype": "2.6.1",
     "eslint-plugin-prefer-object-spread": "1.1.0",
     "flow-bin": "0.33.0",
-    "jest": "17.0.3"
+    "jest": "^20.0.4"
   },
   "engines": {
     "atom": ">=1.10.2",
     "node": ">=5.10.0"
   },
+  "babel": {
+    "sourceMap": "inline",
+    "presets": [
+      "flow",
+      "env",
+      "stage-2"
+    ]
+  },
   "jest": {
-    "transform": {
-      ".*": "<rootDir>/tools/jestPreprocessor.js"
-    },
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "__tests__/fixtures/"

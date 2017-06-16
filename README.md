@@ -59,8 +59,8 @@ cd nuclide-format-js
 apm link
 
 # Install dependencies and start the transpiler watcher
-npm install
-npm run watch
+yarn install
+yarn run watch
 ```
 
 ## releasing
@@ -69,7 +69,7 @@ npm run watch
 
 ```sh
 # Bump the version number
-npm version patch --no-git-tag-version
+yarn version --no-git-tag-version
 
 # Commit the version bump
 git add package.json

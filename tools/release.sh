@@ -2,7 +2,7 @@
 
 set -e
 
-npm run build
+yarn run build
 
 # Checkout a detached head so we don't advance master when we publish
 git checkout --detach $(git rev-parse HEAD)
@@ -29,5 +29,5 @@ echo
 echo "    git push master"
 echo "    git push origin $VERSION_TAG"
 echo "    apm publish --tag $VERSION_TAG"
-echo "    npm publish"
+echo "    yarn publish"
 echo

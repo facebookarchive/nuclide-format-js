@@ -104,7 +104,7 @@ function getDeclaredIdentifiers(
         });
       }
       this.traverse(path);
-    }
+    };
   });
   jscs.types.visit(root.nodes()[0], visitor);
   return ids;

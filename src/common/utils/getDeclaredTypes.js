@@ -12,7 +12,6 @@ import type {Collection, Node, NodePath} from '../types/ast';
 import type {SourceOptions} from '../options/SourceOptions';
 
 import jscs from 'jscodeshift';
-import matchNode from 'jscodeshift/dist/matchNode';
 
 type ConfigEntry = {
   nodeType: string,
