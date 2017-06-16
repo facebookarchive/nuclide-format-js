@@ -2,17 +2,13 @@
 
 [![Build Status](https://travis-ci.org/facebooknuclide/nuclide-format-js.svg?branch=master)](https://travis-ci.org/facebooknuclide/nuclide-format-js)
 
-This feature is a collection of codemods that automatically clean up different aspects of code so
-that you do not have to worry about every little formatting detail. Right now all of the codemods
-live in `src/common` feature.
+Use this [Atom](https://atom.io/) plugin to automatically add `require` and `import` statements for values and types in your JavaScript.
 
-## usage
+## Usage
 
 The default keyboard shortcut for `nuclide-format-js:format` is `cmd-shift-i`.
 
-## codemods
-
-### requires
+## Details
 
 This collection of codemods automatically adds, removes, and formats your requires. It is primarily
 a heuristic that works by requiring identifiers that are being used that were not declared. It is
@@ -24,17 +20,48 @@ transforms:
 
 + Don't shadow require names anywhere in the file. The transform is very minimally aware of scope.
 + Don't alias requires (unless you specify the alias in the aliases setting).
-+ Destructure in a line separate from the require.
++ Destructure in a line separate from the require:
 
 ```js
 var React = require('react');
 var {PropTypes} = React;
 ```
 
+### Ordering Rules
+
+It is good to keep a consistent ordering of lists to avoid most merge conflicts. You do not need to
+remember the ordering specified here, it has been chosen to give good results and this plugin will
+automatically follow it.
+
+There are 4 groups separated by a blank line:
+
+1. type `import`s
+2. bare `require`s
+3. `require`s assigned to capitalized names (including in destructuring)
+4. `require`s assigned to lowercased names (including in destructuring)
+
+For example:
+
+```
+import type A from 'a';
+
+require('b');
+
+const C = require('c');
+
+const d = require('d');
+```
+
+Each group is then ordered by the module name (the string on the right hand side), ignoring
+its letter casing. The reason for using the module name as opposed to the type or value names
+on the left hand side is that with changing names in destructuring it is more likely that lines
+would shift, causing merge conflicts.
+
+### Scope
+
 There are also a few things that are not supported yet that would be nice to support:
 
 + Relative requires, e.g. `require('../lib/module');`
-+ Common destructures, e.g. `var {PropTypes} = require('react');`
 + Only add requires for known modules by maintaining a list of known modules, or by getting this
 information from Flow.
 + Allow per-directory configurations.
@@ -47,7 +74,7 @@ is getting in your way when using this plugin you can generally work around it b
 plugin's settings. It's possible to adjust things like built-ins, aliases, and even blacklist
 particular transforms there.
 
-## developing
+## Developing
 
 ```sh
 # Clone the repo
@@ -63,7 +90,7 @@ npm install
 npm run watch
 ```
 
-## releasing
+## Releasing
 
 * Make sure that `master` is up-to-date.
 

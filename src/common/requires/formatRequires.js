@@ -63,8 +63,8 @@ const CONFIG: Array<ConfigEntry> = [
       path => isCapitalized(getDeclarationName(path.node)),
     ],
     comparator: (node1, node2) => compareStrings(
-      getDeclarationName(node1),
-      getDeclarationName(node2),
+      getDeclarationModuleName(node1),
+      getDeclarationModuleName(node2),
     ),
     mapper: node => reprintRequire(node),
   },
@@ -78,8 +78,8 @@ const CONFIG: Array<ConfigEntry> = [
       path => !isCapitalized(getDeclarationName(path.node)),
     ],
     comparator: (node1, node2) => compareStrings(
-      getDeclarationName(node1),
-      getDeclarationName(node2),
+      getDeclarationModuleName(node1),
+      getDeclarationModuleName(node2),
     ),
     mapper: node => reprintRequire(node),
   },
@@ -155,15 +155,26 @@ function getDeclarationName(node: Node): string {
   if (jscs.Identifier.check(declaration.id)) {
     return declaration.id.name;
   }
-  // Order by the first property name in the object pattern.
+  // Identify by the first property name in the object pattern.
   if (jscs.ObjectPattern.check(declaration.id)) {
     return declaration.id.properties[0].key.name;
   }
-  // Order by the first element name in the array pattern.
+  // Identify by the first element name in the array pattern.
   if (jscs.ArrayPattern.check(declaration.id)) {
     return declaration.id.elements[0].name;
   }
   return '';
+}
+
+function getDeclarationModuleName(node: Node): string {
+  let rhs = node.declarations[0].init;
+  const names = [];
+  while (jscs.MemberExpression.check(rhs)) {
+    names.unshift(rhs.property.name);
+    rhs = rhs.object;
+  }
+  names.unshift(rhs.arguments[0].value);
+  return names.join('_');
 }
 
 module.exports = formatRequires;
