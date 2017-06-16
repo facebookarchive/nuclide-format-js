@@ -167,7 +167,14 @@ function getDeclarationName(node: Node): string {
 }
 
 function getDeclarationModuleName(node: Node): string {
-  return node.declarations[0].init.arguments[0].value;
+  let rhs = node.declarations[0].init;
+  const names = [];
+  while (jscs.MemberExpression.check(rhs)) {
+    names.unshift(rhs.property.name);
+    rhs = rhs.object;
+  }
+  names.unshift(rhs.arguments[0].value);
+  return names.join('_');
 }
 
 module.exports = formatRequires;
