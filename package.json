@@ -107,6 +107,12 @@
       "type": "boolean",
       "default": true
     },
+    "moveCursorToSyntaxError": {
+      "title": "Move cursor to error",
+      "description": "Place the cursor at the location of the syntax error when the transform fails.",
+      "type": "boolean",
+      "default": true
+    },
     "nuclideFixHeader": {
       "title": "Nuclide: Fix Header",
       "description": "This is used to fix the header when developing on Nuclide source code. This should rarely affect anything outside of Nuclide source.",

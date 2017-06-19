@@ -14,6 +14,8 @@ import type {SourceOptions} from '../common/options/SourceOptions';
 
 import updateCursor from '../update-cursor';
 
+type ErrorWithLocation = {loc?: {line: number, column: number}};
+
 async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise<void> {
   const editor = editor_ || atom.workspace.getActiveTextEditor();
   if (!editor) {
@@ -27,7 +29,15 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   const inputSource = buffer.getText();
 
   // Auto-require transform.
-  const outputSource = transformCodeOrShowError(inputSource, options);
+  const {outputSource, error} = transformCodeOrShowError(inputSource, options);
+
+  // Update position if source has a syntax error
+  if (error && atom.config.get('nuclide-format-js.moveCursorToSyntaxError')) {
+    const position = syntaxErrorPosition(error);
+    if (position) {
+      editor.setCursorBufferPosition(position);
+    }
+  }
 
   // Update the source and position after all transforms are done. Do nothing
   // if the source did not change at all.
@@ -48,7 +58,10 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
 }
 
 
-function transformCodeOrShowError(inputSource: string, options: SourceOptions): string {
+function transformCodeOrShowError(
+  inputSource: string,
+  options: SourceOptions,
+): {outputSource: string, error?: ErrorWithLocation} {
   const {transform} = require('../common');
   // TODO: Add a limit so the transform is not run on files over a certain size.
   let outputSource;
@@ -56,7 +69,7 @@ function transformCodeOrShowError(inputSource: string, options: SourceOptions): 
     outputSource = transform(inputSource, options);
   } catch (error) {
     showErrorNotification(error);
-    return inputSource;
+    return {outputSource: inputSource, error};
   }
   dismissExistingErrorNotification();
   if (
@@ -66,7 +79,7 @@ function transformCodeOrShowError(inputSource: string, options: SourceOptions): 
   ) {
     showSuccessNotification();
   }
-  return outputSource;
+  return {outputSource};
 }
 
 const ERROR_TITLE = 'Nuclide Format JS: Fix Requires failed';
@@ -108,6 +121,13 @@ function dismissNotification(title: string): void {
   atom.notifications.getNotifications()
     .filter(notification => notification.getMessage() === title)
     .forEach(notification => notification.dismiss());
+}
+
+function syntaxErrorPosition(error: ErrorWithLocation): ?[number, number] {
+  const {line, column} = error.loc || {};
+  return Number.isInteger(line) && Number.isInteger(column)
+    ? [line - 1, column]
+    : null;
 }
 
 module.exports = formatCode;
