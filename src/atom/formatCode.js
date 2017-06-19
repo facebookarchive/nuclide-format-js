@@ -27,9 +27,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   const inputSource = buffer.getText();
 
   // Auto-require transform.
-  // TODO: Add a limit so the transform is not run on files over a certain size.
-  const {transform} = require('../common');
-  const outputSource = transform(inputSource, options);
+  const outputSource = transformCodeOrShowError(inputSource, options);
 
   // Update the source and position after all transforms are done. Do nothing
   // if the source did not change at all.
@@ -47,6 +45,65 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
   if (atom.config.get('nuclide-format-js.saveAfterRun')) {
     editor.save();
   }
+}
+
+
+function transformCodeOrShowError(inputSource: string, options: SourceOptions): string {
+  const {transform} = require('../common');
+  // TODO: Add a limit so the transform is not run on files over a certain size.
+  let outputSource;
+  try {
+    outputSource = transform(inputSource, options);
+  } catch (error) {
+    showErrorNotification(error);
+    return inputSource;
+  }
+  dismissExistingErrorNotification();
+  if (outputSource === inputSource) {
+    showSuccessNotification();
+  }
+  return outputSource;
+}
+
+const ERROR_TITLE = 'nuclide-format-js failed';
+
+function showErrorNotification(error: Error): void {
+  dismissExistingErrorNotification();
+  dismissExistingSuccessNotification();
+  atom.notifications.addError(ERROR_TITLE, {
+    detail: error.toString(),
+    stack: error.stack,
+    dismissable: true,
+  });
+}
+
+function dismissExistingErrorNotification(): void {
+  dismissNotification(ERROR_TITLE);
+}
+
+const SUCCESS_TITLE = 'nuclide-format-js succeeded';
+
+let dismissSuccessNotificationTimeout;
+function showSuccessNotification(): void {
+  dismissExistingSuccessNotification();
+  atom.notifications.addSuccess(SUCCESS_TITLE, {
+    detail: 'No changes were needed.',
+    dismissable: true,
+  });
+  dismissSuccessNotificationTimeout = setTimeout(() => {
+    dismissExistingSuccessNotification();
+  }, 2000);
+}
+
+function dismissExistingSuccessNotification(): void {
+  dismissNotification(SUCCESS_TITLE);
+  clearTimeout(dismissSuccessNotificationTimeout);
+}
+
+function dismissNotification(title: string): void {
+  atom.notifications.getNotifications()
+    .filter(notification => notification.getMessage() === title)
+    .forEach(notification => notification.dismiss());
 }
 
 module.exports = formatCode;
