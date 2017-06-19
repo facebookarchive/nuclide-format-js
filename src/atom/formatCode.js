@@ -59,13 +59,17 @@ function transformCodeOrShowError(inputSource: string, options: SourceOptions): 
     return inputSource;
   }
   dismissExistingErrorNotification();
-  if (outputSource === inputSource) {
+  if (
+    outputSource === inputSource &&
+    // Do not confirm success if user opted out
+    atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
+  ) {
     showSuccessNotification();
   }
   return outputSource;
 }
 
-const ERROR_TITLE = 'nuclide-format-js failed';
+const ERROR_TITLE = 'Nuclide Format JS: Fix Requires failed';
 
 function showErrorNotification(error: Error): void {
   dismissExistingErrorNotification();
@@ -81,7 +85,7 @@ function dismissExistingErrorNotification(): void {
   dismissNotification(ERROR_TITLE);
 }
 
-const SUCCESS_TITLE = 'nuclide-format-js succeeded';
+const SUCCESS_TITLE = 'Nuclide Format JS: Fix Requires succeeded';
 
 let dismissSuccessNotificationTimeout;
 function showSuccessNotification(): void {
