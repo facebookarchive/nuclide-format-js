@@ -156,8 +156,7 @@ class ModuleMap {
         );
         break;
       }
-    } else if (options.jsxIdentifier) {
-      // TODO: Make this configurable so that the suffix for JSX can be changed.
+    } else if (options.jsxSuffix) {
       literal = id + '.react';
     } else {
       // TODO: Make this configurable so that it's possible to only add known

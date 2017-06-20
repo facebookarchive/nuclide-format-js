@@ -22,7 +22,7 @@ export function activate(state: ?Object): void {
     return;
   }
 
-  require("regenerator-runtime/runtime");
+  require('regenerator-runtime/runtime');
   const formatCode = require('./formatCode');
   const {calculateOptions, observeSettings} = require('./settings');
 

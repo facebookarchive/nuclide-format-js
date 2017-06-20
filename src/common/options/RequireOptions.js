@@ -16,5 +16,5 @@ import type {AbsolutePath} from '../types/common';
 export type RequireOptions = {
   sourcePath?: AbsolutePath,
   typeImport?: boolean,
-  jsxIdentifier?: boolean,
+  jsxSuffix?: boolean,
 };
