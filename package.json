@@ -101,16 +101,23 @@
         "type": "string"
       }
     },
+    "confirmNoChangeSuccess": {
+      "title": "Confirm success",
+      "description": "Show a brief notification when the transform led to no changes.",
+      "type": "boolean",
+      "default": true
+    },
+    "moveCursorToSyntaxError": {
+      "title": "Move cursor to error",
+      "description": "Place the cursor at the location of the syntax error when the transform fails.",
+      "type": "boolean",
+      "default": true
+    },
     "nuclideFixHeader": {
       "title": "Nuclide: Fix Header",
       "description": "This is used to fix the header when developing on Nuclide source code. This should rarely affect anything outside of Nuclide source.",
       "type": "boolean",
       "default": true
-    },
-    "reprint": {
-      "title": "Reprint: Format all code",
-      "type": "boolean",
-      "default": false
     },
     "requiresTransferComments": {
       "title": "Requires: Transfer Comments",
