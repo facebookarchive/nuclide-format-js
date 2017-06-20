@@ -22,6 +22,7 @@ export type Settings = {
   aliases: Array<[string, string]>,
   builtIns: Array<string>,
   builtInTypes: Array<string>,
+  jsxSuffix: boolean,
   nuclideFixHeader: boolean,
   requiresTransferComments: boolean,
   requiresRemoveUnusedRequires: boolean,
@@ -58,6 +59,7 @@ export function calculateOptions(settings: Settings): SourceOptions {
   return {
     blacklist: calculateBlacklist(settings),
     moduleMap: calculateModuleMap(settings),
+    jsxSuffix: settings.jsxSuffix,
   };
 }
 

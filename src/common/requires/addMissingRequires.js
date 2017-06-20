@@ -33,8 +33,8 @@ function addMissingRequires(root: Collection, options: SourceOptions): void {
   // Add missing JSX requires.
   getUndeclaredJSXIdentifiers(root, options).forEach(name => {
     const node = moduleMap.getRequire(name, {
+      jsxSuffix: options.jsxSuffix,
       sourcePath: options.sourcePath,
-      jsxIdentifier: true,
     });
     _first.insertBefore(node);
   });

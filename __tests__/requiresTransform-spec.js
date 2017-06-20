@@ -75,6 +75,7 @@ const TESTS = [
 
 const SOURCE_OPTIONS = {
   moduleMap: DefaultModuleMap,
+  jsxSuffix: true,
 };
 
 function readFileP(filename: string): Promise<string> {

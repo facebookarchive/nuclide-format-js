@@ -119,6 +119,12 @@
       "type": "boolean",
       "default": true
     },
+    "jsxSuffix": {
+      "title": "React: Add module name suffix",
+      "description": "Attach the `.react` suffix to React component module names.",
+      "type": "boolean",
+      "default": true
+    },
     "requiresTransferComments": {
       "title": "Requires: Transfer Comments",
       "type": "boolean",
