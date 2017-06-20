@@ -174,7 +174,7 @@ function getDeclarationModuleName(node: Node): string {
     rhs = rhs.object;
   }
   names.unshift(rhs.arguments[0].value);
-  return names.join('_');
+  return names.join('.');
 }
 
 module.exports = formatRequires;
