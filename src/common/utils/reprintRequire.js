@@ -10,7 +10,7 @@
 
 import type {Node} from '../types/ast';
 
-import {compareStrings} from './StringUtils';
+import {compareStringsCapitalsLast} from './StringUtils';
 import jscs from 'jscodeshift';
 import oneLineObjectPattern from './oneLineObjectPattern';
 import reprintComment from './reprintComment';
@@ -49,7 +49,7 @@ function reprintRequireHelper(node: Node): Node {
       );
     } else if (jscs.ObjectPattern.check(declaration.id)) {
       declaration.id.properties.sort((prop1, prop2) => {
-        return compareStrings(prop1.key.name, prop2.key.name);
+        return compareStringsCapitalsLast(prop1.key.name, prop2.key.name);
       });
       return jscs.variableDeclaration(
         kind,
@@ -68,11 +68,10 @@ function reprintRequireHelper(node: Node): Node {
 
   if (jscs.ImportDeclaration.check(node) && node.importKind === 'type') {
     // Sort the specifiers.
-    node.specifiers.sort((one, two) => compareStrings(
+    node.specifiers.sort((one, two) => compareStringsCapitalsLast(
       one.local.name,
       two.local.name,
     ));
-    // TODO: Properly remove new lines from the node.
     return node;
   }
 

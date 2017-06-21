@@ -54,7 +54,7 @@ const CONFIG: Array<ConfigEntry> = [
     mapper: node => reprintRequire(node),
   },
 
-  // Handle UpperCase requires, e.g: `require('UpperCase');`
+  // Handle UpperCase requires, e.g: `const UpperCase = require('UpperCase');`
   {
     nodeType: jscs.VariableDeclaration,
     filters: [
@@ -69,7 +69,7 @@ const CONFIG: Array<ConfigEntry> = [
     mapper: node => reprintRequire(node),
   },
 
-  // Handle lowerCase requires, e.g: `require('lowerCase');`
+  // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
   {
     nodeType: jscs.VariableDeclaration,
     filters: [
@@ -155,13 +155,19 @@ function getDeclarationName(node: Node): string {
   if (jscs.Identifier.check(declaration.id)) {
     return declaration.id.name;
   }
-  // Identify by the first property name in the object pattern.
+  // Identify by the first uncapitalized or other property name in the object pattern.
   if (jscs.ObjectPattern.check(declaration.id)) {
-    return declaration.id.properties[0].key.name;
+    const uncapitalized = declaration.id.properties
+      .map(property => property.key.name)
+      .filter(name => !isCapitalized(name))[0];
+    return uncapitalized || declaration.id.properties[0].key.name;
   }
-  // Identify by the first element name in the array pattern.
+  // Identify by the first uncapitalized or other element name in the array pattern.
   if (jscs.ArrayPattern.check(declaration.id)) {
-    return declaration.id.elements[0].name;
+    const uncapitalized = declaration.id.elements
+      .map(element => element.name)
+      .filter(name => !isCapitalized(name))[0];
+    return uncapitalized || declaration.id.elements[0].name;
   }
   return '';
 }
