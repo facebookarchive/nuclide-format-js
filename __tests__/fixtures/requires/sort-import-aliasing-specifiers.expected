@@ -1,0 +1,4 @@
+import type {A as D, B as C} from 'AB';
+import type {Foo} from 'Foo';
+
+function foo(a: C, b: D, foo: Foo) {}

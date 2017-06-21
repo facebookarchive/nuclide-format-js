@@ -24,7 +24,6 @@ type ConfigEntry = {
   nodeType: string,
   filters: Array<(path: NodePath) => boolean>,
   comparator: (node1: Node, node2: Node) => number,
-  mapper: (node: Node) => Node,
 };
 
 // Set up a config to easily add require formats
@@ -37,7 +36,6 @@ const CONFIG: Array<ConfigEntry> = [
       node1.source.value,
       node2.source.value,
     ),
-    mapper: node => reprintRequire(node),
   },
 
   // Handle side effects, e.g: `require('monkey-patches');`
@@ -51,7 +49,6 @@ const CONFIG: Array<ConfigEntry> = [
       node1.expression.arguments[0].value,
       node2.expression.arguments[0].value,
     ),
-    mapper: node => reprintRequire(node),
   },
 
   // Handle UpperCase requires, e.g: `const UpperCase = require('UpperCase');`
@@ -66,7 +63,6 @@ const CONFIG: Array<ConfigEntry> = [
       getDeclarationModuleName(node1),
       getDeclarationModuleName(node2),
     ),
-    mapper: node => reprintRequire(node),
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
@@ -81,7 +77,6 @@ const CONFIG: Array<ConfigEntry> = [
       getDeclarationModuleName(node1),
       getDeclarationModuleName(node2),
     ),
-    mapper: node => reprintRequire(node),
   },
 ];
 
@@ -106,7 +101,6 @@ function formatRequires(root: Collection): void {
     return;
   }
   const _first = first; // For flow.
-
   // Create groups of requires from each config
   const nodeGroups = CONFIG.map(config => {
     const paths = root
@@ -116,7 +110,7 @@ function formatRequires(root: Collection): void {
     // Save the underlying nodes before removing the paths
     const nodes = paths.nodes().slice();
     paths.forEach(path => jscs(path).remove());
-    return nodes.map(node => config.mapper(node)).sort(config.comparator);
+    return nodes.map(reprintRequire).sort(config.comparator);
   });
 
   // Build all the nodes we want to insert, then add them
@@ -139,7 +133,7 @@ function isValidRequireDeclaration(node: Node): boolean {
   }
   if (jscs.ObjectPattern.check(declaration.id)) {
     return declaration.id.properties.every(
-      prop => prop.shorthand && jscs.Identifier.check(prop.key),
+      prop => jscs.Identifier.check(prop.key),
     );
   }
   if (jscs.ArrayPattern.check(declaration.id)) {

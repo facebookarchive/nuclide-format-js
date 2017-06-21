@@ -69,8 +69,8 @@ function reprintRequireHelper(node: Node): Node {
   if (jscs.ImportDeclaration.check(node) && node.importKind === 'type') {
     // Sort the specifiers.
     node.specifiers.sort((one, two) => compareStringsCapitalsLast(
-      one.local.name,
-      two.local.name,
+      one.imported.name,
+      two.imported.name,
     ));
     return node;
   }

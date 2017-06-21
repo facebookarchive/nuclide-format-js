@@ -55,7 +55,7 @@ const d = require('d');
 Each group is then ordered by the module name (the string on the right hand side), ignoring
 its letter casing. The reason for using the module name as opposed to the type or value names
 on the left hand side is that with changing names in destructuring it is more likely that lines
-would shift, causing merge conflicts. Destructuring lists are also sorted,
+would shift, causing merge conflicts. Destructuring lists are also sorted by imported names,
 with uncapitalized names grouped first.
 
 ### Scope
