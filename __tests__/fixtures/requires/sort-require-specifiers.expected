@@ -1,0 +1,7 @@
+const D = require('D');
+
+const {s, P, Q} = require('X');
+const {aA, aB, B, C} = require('Z');
+
+aA(aB(B, C, D))
+s(Q, P)
