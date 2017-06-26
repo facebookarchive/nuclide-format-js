@@ -51,6 +51,9 @@ function printRoot(root: Collection): string {
     output += '\n';
   }
 
+  // Remove spurious newline at the end.
+  output = output.replace(/\n\n$/, '\n');
+
   return output;
 }
 
