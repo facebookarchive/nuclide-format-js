@@ -42,6 +42,7 @@ const TESTS = [
   'add-template-identifiers',
   'add-try-catches',
   'add-types',
+  'allow-only-requires',
   'demote-requires',
   'ignore-arbitrary-new-lines',
   'ignore-array-pattern-elements',

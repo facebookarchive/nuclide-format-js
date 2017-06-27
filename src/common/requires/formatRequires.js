@@ -113,11 +113,18 @@ function formatRequires(root: Collection): void {
     return nodes.map(reprintRequire).sort(config.comparator);
   });
 
+  const programBody = root.get('program').get('body');
+  const allNodesRemoved = programBody.value.length === 0;
+
   // Build all the nodes we want to insert, then add them
   const allGroups = [[NewLine.statement]];
   nodeGroups.forEach(group => allGroups.push(group, [NewLine.statement]));
-  const nodesToInsert = Array.prototype.concat.apply([], allGroups);
-  nodesToInsert.reverse().forEach(node => _first.insertBefore(node));
+  const nodesToInsert = [].concat(...allGroups);
+  if (allNodesRemoved) {
+    programBody.push(...nodesToInsert);
+  } else {
+    _first.insertBefore(...nodesToInsert);
+  }
 }
 
 /**
