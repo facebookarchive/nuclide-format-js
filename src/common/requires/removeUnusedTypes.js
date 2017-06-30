@@ -34,6 +34,11 @@ const CONFIG: Array<ConfigEntry> = [
     filters: [isGlobal, isTypeImport],
     getNames: node => node.specifiers.map(specifier => specifier.local.name),
   },
+  {
+    nodeType: jscs.ImportSpecifier,
+    filters: [path => isGlobal(path.parent) && isTypeImport(path.parent)],
+    getNames: node => [node.local.name],
+  },
 ];
 
 function removeUnusedTypes(root: Collection, options: SourceOptions): void {
