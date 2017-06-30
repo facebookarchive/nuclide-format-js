@@ -14,6 +14,8 @@ import transform from '../src/common/transform';
 import fs from 'fs';
 import path from 'path';
 
+import {defaultJSXNonReactNames} from '../src/common';
+
 const TESTS = [
   'add-array-expressions',
   'add-assignments',
@@ -59,6 +61,7 @@ const TESTS = [
   'promote-types',
   'remove-extra-new-lines',
   'remove-nested-object-pattern',
+  'remove-react-when-using-fbt',
   'remove-shadowed-requires',
   'remove-shadowed-types',
   'remove-unused-array-patterns',
@@ -81,6 +84,7 @@ const TESTS = [
 const SOURCE_OPTIONS = {
   moduleMap: DefaultModuleMap,
   jsxSuffix: true,
+  jsxNonReactNames: defaultJSXNonReactNames,
 };
 
 function readFileP(filename: string): Promise<string> {

@@ -31,4 +31,7 @@ module.exports = {
   get defaultAliases() {
     return require('./constants/commonAliases');
   },
+  get defaultJSXNonReactNames() {
+    return require('./constants/commonJSXNonReactNames');
+  },
 };
