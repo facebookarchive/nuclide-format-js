@@ -10,7 +10,8 @@
 
 import updateCursor from '../update-cursor';
 
-function writeChanges(editor: TextEditor, inputSource: string, outputSource: string): void {
+function writeChanges(editor: TextEditor, inputSource_: string, outputSource: string): void {
+  const inputSource = validInputSource(inputSource_);
   const buffer = editor.getBuffer();
   const [startIndex, endIndex] = indecesOfDifference(inputSource, outputSource);
   const start = buffer.positionForCharacterIndex(startIndex);
@@ -42,6 +43,10 @@ function indecesOfDifference(a, b) {
     }
   }
   return [i, j];
+}
+
+function validInputSource(inputSource) {
+  return inputSource[inputSource.length - 1] === '\n' ? inputSource : inputSource + '\n';
 }
 
 module.exports = writeChanges;
