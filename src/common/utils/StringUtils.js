@@ -35,7 +35,7 @@ function compareStringsCapitalsLast(one: ?string, two: ?string): number {
 function isCapitalized(name: string): boolean {
   return (
     name.length > 0 &&
-    name.charAt(0).toUpperCase() === name.charAt(0)
+    name.charAt(0).toLowerCase() !== name.charAt(0)
   );
 }
 
