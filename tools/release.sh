@@ -7,6 +7,9 @@ yarn run build
 # Checkout a detached head so we don't advance master when we publish
 git checkout --detach $(git rev-parse HEAD)
 
+# Remove lib from gitignore as we want to commit it for release
+sed -i '' '/lib/d' .gitignore
+
 # "apm" doesn't honor ".npmignore" files. As a workaround, ".npmignore" is
 # merged into ".gitignore":
 cat >> .gitignore <<- EOF
@@ -15,6 +18,7 @@ cat >> .gitignore <<- EOF
 ############################
 EOF
 cat .npmignore >> .gitignore
+
 
 # Commit built files & remove newly ignored ones.
 VERSION_TAG=v$(node -p 'require("./package.json").version')

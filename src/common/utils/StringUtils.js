@@ -21,7 +21,7 @@ function capitalize(word: string): string {
  * sort of natural compare algorithm.
  */
 function compareStrings(one: ?string, two: ?string): number {
-  return (one || '').localeCompare(two || '', {caseFirst: 'lower'});
+  return (one || '').localeCompare(two || '', undefined, {caseFirst: 'lower'});
 }
 
 function compareStringsCapitalsLast(one: ?string, two: ?string): number {
