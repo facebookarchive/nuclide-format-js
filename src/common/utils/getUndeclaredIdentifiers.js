@@ -22,7 +22,7 @@ function getUndeclaredIdentifiers(
   options: SourceOptions,
 ): Set<string> {
   const declared = getDeclaredIdentifiers(root, options);
-  const undeclared = getNonDeclarationIdentifiers(root);
+  const undeclared = getNonDeclarationIdentifiers(root, options);
   // now remove anything that was declared
   for (const name of declared) {
     undeclared.delete(name);

@@ -15,6 +15,8 @@ import requiresTransform from '../src/common/requires/transform';
 import fs from 'fs';
 import path from 'path';
 
+import {defaultJSXNonReactNames} from '../src/common';
+
 function readFileP(filename: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(filename, 'utf8', (err, data) => {
@@ -33,6 +35,7 @@ describe('options', () => {
     requiresTransform(root, {
       moduleMap: DefaultModuleMap,
       blacklist: new Set(['requires.removeUnusedRequires']),
+      jsxNonReactNames: defaultJSXNonReactNames,
     });
     const actual = printRoot(root);
 

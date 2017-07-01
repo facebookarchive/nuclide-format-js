@@ -119,6 +119,17 @@
       "type": "boolean",
       "default": true
     },
+    "jsxNonReactNames": {
+      "title": "React: Ignored JSX Tags",
+      "description": "These tags or namespaces do not require React to be required.",
+      "type": "array",
+      "default": [
+        "fbt"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
     "jsxSuffix": {
       "title": "React: Add module name suffix",
       "description": "Attach the `.react` suffix to React component module names.",

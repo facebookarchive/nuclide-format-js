@@ -9,13 +9,14 @@
  */
 
 import type {Collection, Node, NodePath} from '../types/ast';
+import type {SourceOptions} from '../options/SourceOptions';
 
 import getNamesFromID from './getNamesFromID';
 import jscs from 'jscodeshift';
 
 type ConfigEntry = {
   nodeType: string,
-  getNodes: (path: NodePath) => Array<Node>,
+  getNodes: (path: NodePath, options: SourceOptions) => Array<Node>,
 };
 
 const REACT_NODE = jscs.identifier('React');
@@ -177,7 +178,7 @@ const CONFIG: Array<ConfigEntry> = [
   // Special case. Any JSX elements will get transpiled to use React.
   {
     nodeType: jscs.JSXOpeningElement,
-    getNodes: path => [REACT_NODE],
+    getNodes: (path, options) => (shouldRequireReact(path, options) ? [REACT_NODE] : []),
   },
 
   // foo`something`
@@ -205,13 +206,13 @@ const CONFIG: Array<ConfigEntry> = [
  * NOTE: this can get identifiers that are declared, if you want access to
  * identifiers that are access but undeclared see getUndeclaredIdentifiers
  */
-function getNonDeclarationIdentifiers(root: Collection): Set<string> {
+function getNonDeclarationIdentifiers(root: Collection, options: SourceOptions): Set<string> {
   const ids = new Set();
   const visitor = {};
 
   CONFIG.forEach(config => {
     visitor[`visit${config.nodeType}`] = function(path) {
-      const nodes = config.getNodes(path);
+      const nodes = config.getNodes(path, options);
       nodes.forEach(node => {
         const names = getNamesFromID(node);
         for (const name of names) {
@@ -224,6 +225,17 @@ function getNonDeclarationIdentifiers(root: Collection): Set<string> {
 
   jscs.types.visit(root.nodes()[0], visitor);
   return ids;
+}
+
+function shouldRequireReact(path: NodePath, options: SourceOptions): boolean {
+  const tag = path.node.name;
+  if (jscs.JSXNamespacedName.check(tag)) {
+    return !options.jsxNonReactNames.has(tag.namespace.name);
+  }
+  if (jscs.JSXIdentifier.check(tag)) {
+    return !options.jsxNonReactNames.has(tag.name);
+  }
+  return true;
 }
 
 module.exports = getNonDeclarationIdentifiers;

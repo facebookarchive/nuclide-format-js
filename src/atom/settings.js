@@ -22,6 +22,7 @@ export type Settings = {
   aliases: Array<[string, string]>,
   builtIns: Array<string>,
   builtInTypes: Array<string>,
+  jsxNonReactNames: Array<string>,
   jsxSuffix: boolean,
   nuclideFixHeader: boolean,
   requiresTransferComments: boolean,
@@ -60,6 +61,7 @@ export function calculateOptions(settings: Settings): SourceOptions {
     blacklist: calculateBlacklist(settings),
     moduleMap: calculateModuleMap(settings),
     jsxSuffix: settings.jsxSuffix,
+    jsxNonReactNames: new Set(settings.jsxNonReactNames),
   };
 }
 

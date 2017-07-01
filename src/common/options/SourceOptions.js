@@ -20,4 +20,5 @@ export type SourceOptions = {
   moduleMap: ModuleMap,
   sourcePath?: AbsolutePath,
   jsxSuffix?: boolean,
+  jsxNonReactNames: Set<string>,
 };
