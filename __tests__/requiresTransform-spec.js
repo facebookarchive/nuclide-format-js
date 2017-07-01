@@ -79,6 +79,7 @@ const TESTS = [
   'sort-require-specifiers',
   'sort-requires',
   'sort-strange-require-expressions',
+  'sort-symbols-as-lowercase',
   'split-multiple-leading-comments',
 ];
 
