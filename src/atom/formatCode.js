@@ -12,7 +12,7 @@
 
 import type {SourceOptions} from '../common/options/SourceOptions';
 
-import updateCursor from '../update-cursor';
+import writeChanges from './writeChanges';
 
 type ErrorWithLocation = {loc?: {line: number, column: number}};
 
@@ -45,11 +45,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
     return;
   }
 
-  const range = buffer.getRange();
-  const position = editor.getCursorBufferPosition();
-  editor.setTextInBufferRange(range, outputSource);
-  const {row, column} = updateCursor(inputSource, position, outputSource);
-  editor.setCursorBufferPosition([row, column]);
+  writeChanges(editor, inputSource, outputSource);
 
   // Save the file if that option is specified.
   if (atom.config.get('nuclide-format-js.saveAfterRun')) {
