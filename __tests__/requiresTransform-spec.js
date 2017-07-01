@@ -65,6 +65,7 @@ const TESTS = [
   'remove-shadowed-requires',
   'remove-shadowed-types',
   'remove-unused-array-patterns',
+  'remove-unused-destructured-types',
   'remove-unused-requires',
   'remove-unused-types',
   'respect-declaration-kind',
