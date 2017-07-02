@@ -12,8 +12,6 @@
 
 import type {SourceOptions} from '../common/options/SourceOptions';
 
-import writeChanges from './writeChanges';
-
 type ErrorWithLocation = {loc?: {line: number, column: number}};
 
 async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise<void> {
@@ -45,7 +43,7 @@ async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise
     return;
   }
 
-  writeChanges(editor, inputSource, outputSource);
+  buffer.setTextViaDiff(outputSource);
 
   // Save the file if that option is specified.
   if (atom.config.get('nuclide-format-js.saveAfterRun')) {
