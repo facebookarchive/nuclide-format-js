@@ -20,7 +20,7 @@ transforms:
 
 + Don't shadow require names anywhere in the file. The transform is very minimally aware of scope.
 + Don't alias requires (unless you specify the alias in the aliases setting).
-+ Destructure in a line separate from the require:
++ Destructure in a line separate from the require (this is a general best practice):
 
 ```js
 var React = require('react');
@@ -37,8 +37,8 @@ There are 4 groups separated by a blank line:
 
 1. type `import`s
 2. bare `require`s
-3. `require`s assigned to capitalized names (including in destructuring)
-4. `require`s assigned to uncapitalized names (including at least one in destructuring)
+3. `require`s assigned to capitalized names
+4. `require`s assigned to uncapitalized names or object/array destructuring
 
 For example:
 
@@ -55,8 +55,8 @@ const d = require('d');
 Each group is then ordered by the module name (the string on the right hand side), ignoring
 its letter casing. The reason for using the module name as opposed to the type or value names
 on the left hand side is that with changing names in destructuring it is more likely that lines
-would shift, causing merge conflicts. Destructuring lists are also sorted by imported names,
-with uncapitalized names grouped first.
+would shift, causing merge conflicts. Type and object destructuring lists are also sorted by
+imported names, with uncapitalized names grouped first.
 
 ### Scope
 
