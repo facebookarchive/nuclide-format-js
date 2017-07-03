@@ -47,6 +47,7 @@ const TESTS = [
   'allow-only-requires',
   'demote-requires',
   'group-capital-specifiers-with-lowercase',
+  'group-typeof-separately',
   'ignore-arbitrary-new-lines',
   'ignore-array-pattern-elements',
   'ignore-builtin-types',
