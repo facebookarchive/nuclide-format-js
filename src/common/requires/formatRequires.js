@@ -57,7 +57,7 @@ const CONFIG: Array<ConfigEntry> = [
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      path => isCapitalized(getDeclarationName(path.node)),
+      path => isCapitalizedModuleDeclaration(path.node),
     ],
     comparator: (node1, node2) => compareStrings(
       getDeclarationModuleName(node1),
@@ -66,12 +66,13 @@ const CONFIG: Array<ConfigEntry> = [
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
+  // and destructuring
   {
     nodeType: jscs.VariableDeclaration,
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      path => !isCapitalized(getDeclarationName(path.node)),
+      path => !isCapitalizedModuleDeclaration(path.node),
     ],
     comparator: (node1, node2) => compareStrings(
       getDeclarationModuleName(node1),
@@ -151,26 +152,12 @@ function isValidRequireDeclaration(node: Node): boolean {
   return false;
 }
 
-function getDeclarationName(node: Node): string {
+function isCapitalizedModuleDeclaration(node: Node): boolean {
   const declaration = node.declarations[0];
   if (jscs.Identifier.check(declaration.id)) {
-    return declaration.id.name;
+    return isCapitalized(declaration.id.name);
   }
-  // Identify by the first uncapitalized or other property name in the object pattern.
-  if (jscs.ObjectPattern.check(declaration.id)) {
-    const uncapitalized = declaration.id.properties
-      .map(property => property.key.name)
-      .filter(name => !isCapitalized(name))[0];
-    return uncapitalized || declaration.id.properties[0].key.name;
-  }
-  // Identify by the first uncapitalized or other element name in the array pattern.
-  if (jscs.ArrayPattern.check(declaration.id)) {
-    const uncapitalized = declaration.id.elements
-      .map(element => element.name)
-      .filter(name => !isCapitalized(name))[0];
-    return uncapitalized || declaration.id.elements[0].name;
-  }
-  return '';
+  return false;
 }
 
 function getDeclarationModuleName(node: Node): string {
