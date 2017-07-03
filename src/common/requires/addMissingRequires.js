@@ -29,7 +29,7 @@ function addMissingRequires(root: Collection, options: SourceOptions): void {
   getUndeclaredIdentifiers(root, options).forEach(name => {
     const node = moduleMap.getRequire(name, {
       jsxSuffix: jsxIdentifiers.has(name) ? options.jsxSuffix : undefined,
-      sourcePath: options.sourcePath
+      sourcePath: options.sourcePath,
     });
     _first.insertBefore(node);
   });

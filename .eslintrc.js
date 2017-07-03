@@ -37,7 +37,7 @@ module.exports = {
     'comma-dangle': [1, 'always-multiline'],
     'no-cond-assign': 1,
     'no-console': 1,
-    'no-constant-condition': 1,
+    'no-constant-condition': [1, {checkLoops: false}],
     'no-control-regex': 1,
     'no-debugger': 1,
     'no-dupe-args': 1,

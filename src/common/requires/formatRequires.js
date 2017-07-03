@@ -17,6 +17,7 @@ import hasOneRequireDeclaration from '../utils/hasOneRequireDeclaration';
 import isGlobal from '../utils/isGlobal';
 import isRequireExpression from '../utils/isRequireExpression';
 import isTypeImport from '../utils/isTypeImport';
+import isTypeofImport from '../utils/isTypeofImport';
 import jscs from 'jscodeshift';
 import reprintRequire from '../utils/reprintRequire';
 
@@ -32,6 +33,16 @@ const CONFIG: Array<ConfigEntry> = [
   {
     nodeType: jscs.ImportDeclaration,
     filters: [isGlobal, isTypeImport],
+    comparator: (node1, node2) => compareStrings(
+      node1.source.value,
+      node2.source.value,
+    ),
+  },
+
+  // Handle typeof imports
+  {
+    nodeType: jscs.ImportDeclaration,
+    filters: [isGlobal, isTypeofImport],
     comparator: (node1, node2) => compareStrings(
       node1.source.value,
       node2.source.value,

@@ -23,7 +23,8 @@ const CONFIG: Array<ConfigEntry> = [
   {
     nodeType: jscs.ImportDeclaration,
     filters: [
-      path => path.value.importKind === 'type',
+      path => path.value.importKind === 'type' ||
+        path.value.importKind === 'typeof',
     ],
     getNodes: path => path.node.specifiers.map(specifier => specifier.local),
   },

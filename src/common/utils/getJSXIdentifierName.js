@@ -8,7 +8,7 @@
  * @flow
  */
 
-import type {Collection, Node, NodePath} from '../types/ast';
+import type {Node, NodePath} from '../types/ast';
 
 import jscs from 'jscodeshift';
 import {isLowerCase} from './StringUtils';

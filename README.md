@@ -33,23 +33,26 @@ It is good to keep a consistent ordering of lists to avoid most merge conflicts.
 remember the ordering specified here, it has been chosen to give good results and this plugin will
 automatically follow it.
 
-There are 4 groups separated by a blank line:
+There are 5 groups separated by a blank line:
 
 1. type `import`s
-2. bare `require`s
-3. `require`s assigned to capitalized names
-4. `require`s assigned to uncapitalized names or object/array destructuring
+2. typeof `import`s
+3. bare `require`s
+4. `require`s assigned to capitalized names
+5. `require`s assigned to uncapitalized names or object/array destructuring
 
 For example:
 
 ```
 import type A from 'a';
 
-require('b');
+import typeof B from 'b';
 
-const C = require('c');
+require('c');
 
-const d = require('d');
+const D = require('d');
+
+const e = require('e');
 ```
 
 Each group is then ordered by the module name (the string on the right hand side), ignoring
