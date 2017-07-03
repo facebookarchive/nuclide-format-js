@@ -43,7 +43,7 @@ const CONFIG: Array<ConfigEntry> = [
 
 function removeUnusedTypes(root: Collection, options: SourceOptions): void {
   const declared = getDeclaredIdentifiers(root, options);
-  const used = getNonDeclarationTypes(root, options);
+  const used = getNonDeclarationTypes(root);
   const nonTypeImport = getDeclaredTypes(
     root,
     options,

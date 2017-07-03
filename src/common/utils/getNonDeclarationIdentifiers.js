@@ -11,6 +11,7 @@
 import type {Collection, Node, NodePath} from '../types/ast';
 import type {SourceOptions} from '../options/SourceOptions';
 
+import getJSXIdentifierName from './getJSXIdentifierName';
 import getNamesFromID from './getNamesFromID';
 import jscs from 'jscodeshift';
 
@@ -178,7 +179,12 @@ const CONFIG: Array<ConfigEntry> = [
   // Special case. Any JSX elements will get transpiled to use React.
   {
     nodeType: jscs.JSXOpeningElement,
-    getNodes: (path, options) => (shouldRequireReact(path, options) ? [REACT_NODE] : []),
+    getNodes: (path, options) =>
+      getJSXIdentifierName(path).concat(
+        shouldRequireReact(path, options)
+          ? [REACT_NODE]
+          : [],
+      ),
   },
 
   // foo`something`

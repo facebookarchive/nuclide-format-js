@@ -23,18 +23,13 @@ function addMissingRequires(root: Collection, options: SourceOptions): void {
   const _first = first; // For flow.
 
   const {moduleMap} = options;
+  const jsxIdentifiers = getUndeclaredJSXIdentifiers(root, options);
 
   // Add the missing requires.
   getUndeclaredIdentifiers(root, options).forEach(name => {
-    const node = moduleMap.getRequire(name, {sourcePath: options.sourcePath});
-    _first.insertBefore(node);
-  });
-
-  // Add missing JSX requires.
-  getUndeclaredJSXIdentifiers(root, options).forEach(name => {
     const node = moduleMap.getRequire(name, {
-      jsxSuffix: options.jsxSuffix,
-      sourcePath: options.sourcePath,
+      jsxSuffix: jsxIdentifiers.has(name) ? options.jsxSuffix : undefined,
+      sourcePath: options.sourcePath
     });
     _first.insertBefore(node);
   });

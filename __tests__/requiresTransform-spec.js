@@ -57,6 +57,7 @@ const TESTS = [
   'ignore-react-when-using-jsx',
   'ignore-requires-in-blocks',
   'ignore-rest-args',
+  'keep-custom-react-suffix',
   'keep-header-comments',
   'keep-preceding-block-comments',
   'keep-preceding-single-line-comments',

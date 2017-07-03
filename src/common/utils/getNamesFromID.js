@@ -14,7 +14,7 @@ import jscs from 'jscodeshift';
 
 function getNamesFromID(node: Node): Set<string> {
   const ids = new Set();
-  if (jscs.Identifier.check(node)) {
+  if (jscs.Identifier.check(node) || jscs.JSXIdentifier.check(node)) {
     ids.add(node.name);
   } else if (
     jscs.RestElement.check(node) ||
