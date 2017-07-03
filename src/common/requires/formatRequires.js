@@ -163,9 +163,20 @@ function isCapitalizedModuleDeclaration(node: Node): boolean {
 function getDeclarationModuleName(node: Node): string {
   let rhs = node.declarations[0].init;
   const names = [];
-  while (jscs.MemberExpression.check(rhs)) {
-    names.unshift(rhs.property.name);
-    rhs = rhs.object;
+  while (true) {
+    if (jscs.MemberExpression.check(rhs)) {
+      names.unshift(rhs.property.name);
+      rhs = rhs.object;
+    } else if (
+      jscs.CallExpression.check(rhs) &&
+      !jscs.Identifier.check(rhs.callee)
+    ) {
+      rhs = rhs.callee;
+    } else if (jscs.ExpressionStatement.check(rhs)) {
+      rhs = rhs.expression;
+    } else {
+      break;
+    }
   }
   names.unshift(rhs.arguments[0].value);
   return names.join('.');
