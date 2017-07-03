@@ -16,12 +16,20 @@ function capitalize(word: string): string {
 }
 
 /**
- * This is pulled out into its own function rather than using localeCompare
- * directly in case we every choose another sorting algorithm. Such as some
- * sort of natural compare algorithm.
+ * Sorting method that works like String::localCompare, but in Node.js as well.
  */
-function compareStrings(one: ?string, two: ?string): number {
-  return (one || '').localeCompare(two || '', undefined, {caseFirst: 'lower'});
+function compareStrings(one_: ?string, two_: ?string): number {
+  const one = one_ || '';
+  const two = two_ || '';
+  const oneLC = one.toLowerCase();
+  const twoLC = two.toLowerCase();
+  return one !== two && oneLC === twoLC
+    ? simpleCompare(two, one) // lowercase first
+    : simpleCompare(oneLC, twoLC); // alphabetical ascending
+}
+
+function simpleCompare(one: string, two: string): number {
+  return one < two ? -1 : one > two ? 1 : 0;
 }
 
 function compareStringsCapitalsLast(one: ?string, two: ?string): number {
