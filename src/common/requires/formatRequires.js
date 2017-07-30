@@ -24,7 +24,7 @@ import reprintRequire from '../utils/reprintRequire';
 type ConfigEntry = {
   nodeType: string,
   filters: Array<(path: NodePath) => boolean>,
-  comparator: (node1: Node, node2: Node) => number,
+  getSource: (node: Node) => string,
 };
 
 // Set up a config to easily add require formats
@@ -33,20 +33,16 @@ const CONFIG: Array<ConfigEntry> = [
   {
     nodeType: jscs.ImportDeclaration,
     filters: [isGlobal, isTypeImport],
-    comparator: (node1, node2) => compareStrings(
-      node1.source.value,
-      node2.source.value,
-    ),
+    getSource: node =>
+      node.source.value,
   },
 
   // Handle typeof imports
   {
     nodeType: jscs.ImportDeclaration,
     filters: [isGlobal, isTypeofImport],
-    comparator: (node1, node2) => compareStrings(
-      node1.source.value,
-      node2.source.value,
-    ),
+    getSource: node =>
+      node.source.value,
   },
 
   // Handle side effects, e.g: `require('monkey-patches');`
@@ -56,10 +52,8 @@ const CONFIG: Array<ConfigEntry> = [
       isGlobal,
       path => isRequireExpression(path.node),
     ],
-    comparator: (node1, node2) => compareStrings(
-      node1.expression.arguments[0].value,
-      node2.expression.arguments[0].value,
-    ),
+    getSource: node =>
+      getDeclarationModuleName(node.expression),
   },
 
   // Handle UpperCase requires, e.g: `const UpperCase = require('UpperCase');`
@@ -70,10 +64,8 @@ const CONFIG: Array<ConfigEntry> = [
       path => isValidRequireDeclaration(path.node),
       path => isCapitalizedModuleDeclaration(path.node),
     ],
-    comparator: (node1, node2) => compareStrings(
-      getDeclarationModuleName(node1),
-      getDeclarationModuleName(node2),
-    ),
+    getSource: node =>
+      getDeclarationModuleName(node.declarations[0].init),
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
@@ -85,10 +77,8 @@ const CONFIG: Array<ConfigEntry> = [
       path => isValidRequireDeclaration(path.node),
       path => !isCapitalizedModuleDeclaration(path.node),
     ],
-    comparator: (node1, node2) => compareStrings(
-      getDeclarationModuleName(node1),
-      getDeclarationModuleName(node2),
-    ),
+    getSource: node =>
+      getDeclarationModuleName(node.declarations[0].init),
   },
 ];
 
@@ -122,7 +112,14 @@ function formatRequires(root: Collection): void {
     // Save the underlying nodes before removing the paths
     const nodes = paths.nodes().slice();
     paths.forEach(path => jscs(path).remove());
-    return nodes.map(reprintRequire).sort(config.comparator);
+    const sourceGroups = {};
+    nodes.forEach(node => {
+      const source = config.getSource(node);
+      (sourceGroups[source] = sourceGroups[source] || []).push(node);
+    });
+    return Object.keys(sourceGroups)
+      .sort((source1, source2) => compareStrings(source1, source2))
+      .map(source => reprintRequire(sourceGroups[source]));
   });
 
   const programBody = root.get('program').get('body');
@@ -171,8 +168,8 @@ function isCapitalizedModuleDeclaration(node: Node): boolean {
   return false;
 }
 
-function getDeclarationModuleName(node: Node): string {
-  let rhs = node.declarations[0].init;
+function getDeclarationModuleName(requireNode: Node): string {
+  let rhs = requireNode;
   const names = [];
   while (true) {
     if (jscs.MemberExpression.check(rhs)) {

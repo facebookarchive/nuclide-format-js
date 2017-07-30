@@ -1,0 +1,13 @@
+import type N from 'N';
+import type {A, B} from 'Z';
+
+import typeof O from 'O';
+
+require('P');
+
+const M = require('M');
+
+const [j, k] = require('Y');
+const {a, b} = require('Z');
+
+const x: A<B, N, O> = a(b, M, j, k);

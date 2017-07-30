@@ -65,6 +65,7 @@ const TESTS = [
   'keep-preceding-single-line-comments',
   'keep-trailing-comments',
   'promote-types',
+  'remove-duplicate-requires',
   'remove-extra-new-lines',
   'remove-nested-object-pattern',
   'remove-react-when-using-fbt',
