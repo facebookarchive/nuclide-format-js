@@ -21,9 +21,12 @@ const {statement} = jscs.template;
  * Thin wrapper to reprint requires, it's wrapped in a new function in order to
  * easily attach comments to the node.
  */
-function reprintRequire(node: Node): Node {
-  const comments = node.comments;
-  const newNode = reprintRequireHelper(node);
+function reprintRequire(nodes: Array<Node>): Node {
+  let comments = null;
+  nodes.forEach(node => {
+    comments = comments || node.comments;
+  });
+  const newNode = reprintRequireHelper(nodes);
   if (comments) {
     newNode.comments = comments.map(comment => reprintComment(comment));
   }
@@ -31,10 +34,13 @@ function reprintRequire(node: Node): Node {
 }
 
 /**
- * This takes in a require node and reprints it. This should remove whitespace
+ * This takes in require/import nodes with the same source and reprints them
+ * as a single require/import. This should remove whitespace
  * and allow us to have a consistent formatting of all requires.
  */
-function reprintRequireHelper(node: Node): Node {
+function reprintRequireHelper(nodes: Array<Node>): Node {
+  const node = nodes[0];
+  const otherNodes = nodes.slice(1);
   if (jscs.ExpressionStatement.check(node)) {
     return statement`${node.expression}`;
   }
@@ -48,6 +54,10 @@ function reprintRequireHelper(node: Node): Node {
         [jscs.variableDeclarator(declaration.id, declaration.init)],
       );
     } else if (jscs.ObjectPattern.check(declaration.id)) {
+      otherNodes.forEach(otherNode => {
+        const otherDeclaration = otherNode.declarations[0];
+        declaration.id.properties.push(...otherDeclaration.id.properties);
+      });
       declaration.id.properties.sort((prop1, prop2) => {
         return compareStringsCapitalsLast(prop1.key.name, prop2.key.name);
       });
@@ -59,14 +69,28 @@ function reprintRequireHelper(node: Node): Node {
         )],
       );
     } else if (jscs.ArrayPattern.check(declaration.id)) {
+      let bestList = declaration.id;
+      otherNodes.forEach(otherNode => {
+        const otherList = otherNode.declarations[0].id;
+        const otherListSize = otherList.elements && otherList.elements.length;
+        // TODO: support simultaneous object and array destructuring
+        if (otherListSize > bestList.elements.length) {
+          bestList = otherList;
+        }
+      });
       return jscs.variableDeclaration(
         kind,
-        [jscs.variableDeclarator(declaration.id, declaration.init)],
+        [jscs.variableDeclarator(bestList, declaration.init)],
       );
     }
   }
 
   if (jscs.ImportDeclaration.check(node) && node.importKind === 'type') {
+    otherNodes.forEach(otherNode => {
+      const otherSpecifiers = otherNode.specifiers
+        .filter(specifier => specifier.imported != null);
+      node.specifiers.push(...otherSpecifiers);
+    });
     // Sort the specifiers.
     node.specifiers.sort((one, two) => compareStringsCapitalsLast(
       one.imported.name,

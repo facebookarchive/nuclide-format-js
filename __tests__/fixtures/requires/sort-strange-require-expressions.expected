@@ -1,4 +1,5 @@
 require('b')().x;
+require('b')().y;
 
 const D = require('meh').a.b.c('123');
 const E = require('TableWidthsConfig').getWidthConfig().CAMP_GROUP_PANE;
