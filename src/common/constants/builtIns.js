@@ -10,22 +10,48 @@
 
 /**
  * This is the set of modules that are "built-in" and never need to be required.
+ *
+ * Mostly taken from `flow/lib/core.js`.
  */
 module.exports = new Set([
+  // Map, Set excluded on purpose for polyfilling
   'Array',
+  'ArrayBuffer',
   'Boolean',
+  'CallSite',
+  'DataView',
   'Date',
   'Error',
+  'EvalError',
+  'Float32Array',
+  'Float64Array',
   'Function',
   'Infinity',
+  'Int16Array',
+  'Int32Array',
+  'Int8Array',
   'JSON',
   'Math',
+  'NaN',
   'Number',
   'Object',
   'Promise',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Reflect',
   'RegExp',
   'String',
   'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'Uint16Array',
+  'Uint32Array',
+  'Uint8Array',
+  'Uint8ClampedArray',
+  'URIError',
+  'WeakMap',
+  'WeakSet',
 
   'arguments',
   'global',
@@ -38,6 +64,8 @@ module.exports = new Set([
 
   // Browser built ins.
   'alert',
+  'atob',
+  'btoa',
   'clearInterval',
   'clearTimeout',
   'confirm',
@@ -57,6 +85,7 @@ module.exports = new Set([
   'sessionStorage',
   'setInterval',
   'setTimeout',
+  'unescape',
   'window',
 
   'Option',
