@@ -1,0 +1,3 @@
+import type {A} from 'A';
+
+let x: A;
