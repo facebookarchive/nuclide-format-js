@@ -92,10 +92,11 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
       node.specifiers.push(...otherSpecifiers);
     });
     // Sort the specifiers.
-    node.specifiers.sort((one, two) => compareStringsCapitalsLast(
-      one.imported.name,
-      two.imported.name,
-    ));
+    // TODO: Fix this.
+    // node.specifiers.sort((one, two) => compareStringsCapitalsLast(
+    //   one.imported.name,
+    //   two.imported.name,
+    // ));
     return node;
   }
 
