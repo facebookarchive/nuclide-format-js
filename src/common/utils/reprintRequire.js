@@ -91,16 +91,38 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
         .filter(specifier => specifier.imported != null);
       node.specifiers.push(...otherSpecifiers);
     });
+
+    removeDuplicatesInPlace(node.specifiers, one => one.imported && one.imported.name);
+
     // Sort the specifiers.
-    // TODO: Fix this.
-    // node.specifiers.sort((one, two) => compareStringsCapitalsLast(
-    //   one.imported.name,
-    //   two.imported.name,
-    // ));
+    node.specifiers.sort((one, two) => {
+      // Default specifier goes first
+      if (jscs.ImportDefaultSpecifier.check(one)) {
+        return -1;
+      }
+      if (jscs.ImportDefaultSpecifier.check(two)) {
+        return 1;
+      }
+      return compareStringsCapitalsLast(
+        one.imported.name,
+        two.imported.name,
+      )
+    });
     return node;
   }
 
   return node;
+}
+
+function removeDuplicatesInPlace<T1, T2>(list: Array<T1>, getter: T1 => T2) {
+  const map = {};
+  for (let i = list.length - 1; i >= 0; i--) {
+    const label = getter(list[i]);
+    if (label && map[label]) {
+      list.splice(i, 1);
+    }
+    map[label] = true;
+  }
 }
 
 module.exports = reprintRequire;
