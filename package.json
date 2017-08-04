@@ -54,7 +54,7 @@
     ]
   },
   "activationCommands": {
-    "atom-text-editor": "nuclide-format-js:format"
+    "atom-text-editor": "nuclide-format-js:organize-requires"
   },
   "configSchema": {
     "runOnSave": {
