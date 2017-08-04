@@ -6,7 +6,7 @@ Use this [Atom](https://atom.io/) plugin to automatically add `require` and `imp
 
 ## Usage
 
-The default keyboard shortcut for `nuclide-format-js:format` is `cmd-shift-i`.
+The default keyboard shortcut for `nuclide-format-js:organize-requires` is `cmd-shift-i`.
 
 ## Details
 
