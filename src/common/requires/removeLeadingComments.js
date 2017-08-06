@@ -30,6 +30,13 @@ function removeLeadingComments(root: Collection): Array<Node> {
     return [];
   }
 
+  // Check that the comments start the file, otherwise there is likely a
+  // 'use strict' directive and we don't want to transfer these comments.
+  const firstComment = first.comments[0];
+  if (firstComment && firstComment.start != null && firstComment.start !== 0) {
+    return [];
+  }
+
   // Check if the last comment ends exactly where the first node starts.
   let transferLastcomment = false;
   const lastComment = first.comments.reduce(
