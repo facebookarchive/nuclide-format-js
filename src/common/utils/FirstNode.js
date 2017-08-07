@@ -51,7 +51,12 @@ function isValidFirstNode(path: NodePath): boolean {
     return false;
   }
   const rootIdentifier = getRootIdentifierInExpression(path.node);
-  if (rootIdentifier && rootIdentifier.name === 'jest') {
+  if (
+    rootIdentifier && (
+      rootIdentifier.name === 'jest' ||
+      (rootIdentifier.name === 'require' && jscs.MemberExpression.check(rootIdentifier.parent))
+    )
+  ) {
     return false;
   }
   return true;
