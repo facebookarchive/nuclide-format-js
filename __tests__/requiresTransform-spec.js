@@ -58,6 +58,7 @@ const TESTS = [
   'ignore-multiple-comments',
   'ignore-nested-object-patterns',
   'ignore-react-when-using-jsx',
+  'ignore-require-access',
   'ignore-requires-in-blocks',
   'ignore-rest-args',
   'keep-custom-react-suffix',

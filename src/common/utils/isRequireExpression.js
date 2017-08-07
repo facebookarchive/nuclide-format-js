@@ -11,10 +11,15 @@
 import type {Node} from '../types/ast';
 
 import getRootIdentifierInExpression from './getRootIdentifierInExpression';
+import jscs from 'jscodeshift';
 
 function isRequireExpression(node: Node): boolean {
-  const root = getRootIdentifierInExpression(node);
-  return Boolean(root && root.name === 'require');
+  const rootIdentifier = getRootIdentifierInExpression(node);
+  return Boolean(
+  	rootIdentifier &&
+  	jscs.CallExpression.check(rootIdentifier.parent) &&
+  	rootIdentifier.name === 'require'
+  );
 }
 
 module.exports = isRequireExpression;
