@@ -106,7 +106,7 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
       return compareStringsCapitalsLast(
         one.imported.name,
         two.imported.name,
-      )
+      );
     });
     return node;
   }
@@ -115,7 +115,7 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
 }
 
 function removeDuplicatesInPlace<T1, T2>(list: Array<T1>, getter: T1 => T2) {
-  const map = {};
+  const map: {[key: T2]: boolean} = {};
   for (let i = list.length - 1; i >= 0; i--) {
     const label = getter(list[i]);
     if (label && map[label]) {
