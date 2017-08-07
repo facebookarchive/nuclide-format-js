@@ -62,6 +62,7 @@ const TESTS = [
   'ignore-rest-args',
   'keep-custom-react-suffix',
   'keep-header-comments',
+  'keep-header-whitespace',
   'keep-preceding-block-comments',
   'keep-preceding-single-line-comments',
   'keep-trailing-comments',

@@ -37,6 +37,7 @@ function printRoot(root: Collection): string {
     .filter((line, index) => line || index < first || index > last)
     .join('\n');
 
+
   // Remove the NewLine markers.
   output = NewLine.replace(output);
 
@@ -45,6 +46,9 @@ function printRoot(root: Collection): string {
 
   // Remove spurious semicolon after 'use strict'
   output = output.replace("'use strict';;", "'use strict';");
+
+  // Make sure 'use strict' is separated why new line
+  output = output.replace(/'use strict';\n([^\n])/, "'use strict';\n\n$1");
 
   // Make sure there is a new line at the end.
   if (!/^[\w\W]*\n$/.test(output)) {
