@@ -15,23 +15,27 @@ import jscs from 'jscodeshift';
 const {match} = jscs;
 
 /**
- * This traverses a node to find the first identifier in nested expressions.
+ * This traverses a node to find the first identifier in nested expressions,
+ * returning its name and parent node (if applicable).
  */
-function getRootIdentifierInExpression(node: ?Node): ?Node {
+function getRootIdentifierInExpression(
+  node: ?Node,
+  parent?: Node,
+): ?{name: string, parent: ?Node} {
   if (!node) {
     return null;
   }
   if (match(node, {type: 'ExpressionStatement'})) {
-    return getRootIdentifierInExpression(node.expression);
+    return getRootIdentifierInExpression(node.expression, node);
   }
   if (match(node, {type: 'CallExpression'})) {
-    return getRootIdentifierInExpression(node.callee);
+    return getRootIdentifierInExpression(node.callee, node);
   }
   if (match(node, {type: 'MemberExpression'})) {
-    return getRootIdentifierInExpression(node.object);
+    return getRootIdentifierInExpression(node.object, node);
   }
   if (match(node, {type: 'Identifier'})) {
-    return node;
+    return {name: node.name, parent};
   }
   return null;
 }

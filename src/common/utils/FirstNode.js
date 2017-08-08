@@ -50,8 +50,13 @@ function isValidFirstNode(path: NodePath): boolean {
   if (match(path, {expression: {type: 'Literal'}})) {
     return false;
   }
-  const firstObject = getRootIdentifierInExpression(path.node);
-  if (firstObject && match(firstObject, {name: 'jest'})) {
+  const rootIdentifier = getRootIdentifierInExpression(path.node);
+  if (
+    rootIdentifier && (
+      rootIdentifier.name === 'jest' ||
+      (rootIdentifier.name === 'require' && jscs.MemberExpression.check(rootIdentifier.parent))
+    )
+  ) {
     return false;
   }
   return true;
