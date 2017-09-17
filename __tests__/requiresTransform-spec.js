@@ -25,6 +25,7 @@ const TESTS = [
   'add-constructor-arguments',
   'add-default-params',
   'add-expressions',
+  'add-flow-typecasts',
   'add-function-calls',
   'add-if-elses',
   'add-jsx-elements',
