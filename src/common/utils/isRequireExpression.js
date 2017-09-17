@@ -16,9 +16,9 @@ import jscs from 'jscodeshift';
 function isRequireExpression(node: Node): boolean {
   const rootIdentifier = getRootIdentifierInExpression(node);
   return Boolean(
-  	rootIdentifier &&
-  	jscs.CallExpression.check(rootIdentifier.parent) &&
-  	rootIdentifier.name === 'require'
+    rootIdentifier &&
+    jscs.CallExpression.check(rootIdentifier.parent) &&
+    rootIdentifier.name === 'require',
   );
 }
 

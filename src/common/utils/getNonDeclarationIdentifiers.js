@@ -204,6 +204,12 @@ const CONFIG: Array<ConfigEntry> = [
     nodeType: jscs.AssignmentPattern,
     getNodes: path => [path.node.right],
   },
+
+  // (foo: SomeType)
+  {
+    nodeType: jscs.TypeCastExpression,
+    getNodes: path => [path.node.expression],
+  },
 ];
 
 /**
