@@ -51,6 +51,11 @@ const CONFIG: Array<ConfigEntry> = [
     ],
     getNodes: path => path.node.typeParameters.params,
   },
+  {
+    nodeType: jscs.DeclareClass,
+    filters: [],
+    getNodes: path => [path.node.id],
+  },
 ];
 
 /**
