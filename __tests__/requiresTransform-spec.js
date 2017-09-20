@@ -53,6 +53,7 @@ const TESTS = [
   'ignore-array-pattern-elements',
   'ignore-builtin-types',
   'ignore-comments-with-no-requires',
+  'ignore-declare-class',
   'ignore-declared-jsx',
   'ignore-function-params',
   'ignore-flow-utility-types',
