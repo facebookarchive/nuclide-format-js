@@ -58,8 +58,9 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
         const otherDeclaration = otherNode.declarations[0];
         declaration.id.properties.push(...otherDeclaration.id.properties);
       });
+      removeDuplicatesInPlace(declaration.id.properties, one => one.value.name);
       declaration.id.properties.sort((prop1, prop2) => {
-        return compareStringsCapitalsLast(prop1.key.name, prop2.key.name);
+        return compareStringsCapitalsLast(prop1.value.name, prop2.value.name);
       });
       return jscs.variableDeclaration(
         kind,
@@ -92,7 +93,7 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
       node.specifiers.push(...otherSpecifiers);
     });
 
-    removeDuplicatesInPlace(node.specifiers, one => one.imported && one.imported.name);
+    removeDuplicatesInPlace(node.specifiers, one => one.local && one.local.name);
 
     // Sort the specifiers.
     node.specifiers.sort((one, two) => {
@@ -104,8 +105,8 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
         return 1;
       }
       return compareStringsCapitalsLast(
-        one.imported.name,
-        two.imported.name,
+        one.local.name,
+        two.local.name,
       );
     });
     return node;
