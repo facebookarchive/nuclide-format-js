@@ -71,6 +71,7 @@ const TESTS = [
   'keep-trailing-comments',
   'promote-types',
   'remove-duplicate-requires',
+  'remove-duplicate-inline-requires',
   'remove-duplicate-specifiers',
   'remove-extra-new-lines',
   'remove-nested-object-pattern',
