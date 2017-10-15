@@ -42,7 +42,7 @@ function transform(root: Collection, options: SourceOptions): void {
     addMissingTypes(root, options);
   }
   if (!blacklist.has('requires.formatRequires')) {
-    formatRequires(root);
+    formatRequires(root, options);
   }
   if (!blacklist.has('requires.transferComments')) {
     addLeadingComments(root, comments);

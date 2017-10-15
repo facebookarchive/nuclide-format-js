@@ -39,6 +39,10 @@ class ModuleMap {
    */
   _aliasesToRelativize: Map<Identifier, AbsolutePath>;
   /**
+   * Aliases back to their identifiers.
+   */
+  _reversedAliases: Map<Literal, Identifier>;
+  /**
    * Identifiers that might correspond to the default export of a particular
    * literal.
    */
@@ -59,6 +63,8 @@ class ModuleMap {
     this._builtInTypes = options.builtInTypes;
     this._aliases = options.aliases;
     this._aliasesToRelativize = options.aliasesToRelativize;
+    this._reversedAliases =
+      new Map([...options.aliases].map(([i, a]) => [a, i]));
 
     // TODO: Use let for proper scoping.
     let id;
@@ -223,6 +229,12 @@ class ModuleMap {
 
   getBuiltInTypes(): Set<Identifier> {
     return this._builtInTypes;
+  }
+
+  getAlias(id: string): string {
+    return this._reversedAliases.has(id)
+      ? (this._reversedAliases.get(id): any)
+      : id;
   }
 }
 

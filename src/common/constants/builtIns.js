@@ -13,7 +13,7 @@
  *
  * Mostly taken from `flow/lib/core.js`.
  */
-module.exports = new Set([
+module.exports = (new Set([
   // Map, Set excluded on purpose for polyfilling
   'Array',
   'ArrayBuffer',
@@ -110,4 +110,4 @@ module.exports = new Set([
   'jasmine',
   'spyOn',
   'mockRunTimersOnce',
-]);
+]): Set<string>);

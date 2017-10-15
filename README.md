@@ -36,16 +36,14 @@ automatically follow it.
 There are 5 groups separated by a blank line:
 
 1. type `import`s
-2. typeof `import`s
 3. bare `require`s
-4. `require`s assigned to capitalized names
-5. `require`s assigned to uncapitalized names or object/array destructuring
+4. `require`s from modules with capitalized names
+5. `require`s from modules with non-capitalized names
 
 For example:
 
 ```
 import type A from 'a';
-
 import typeof B from 'b';
 
 require('c');
@@ -55,11 +53,10 @@ const D = require('d');
 const e = require('e');
 ```
 
-Each group is then ordered by the module name (the string on the right hand side), ignoring
-its letter casing. The reason for using the module name as opposed to the type or value names
+Each group is then ordered by the module name (the string on the right hand side), with capitalized names being first. The reason for using the module name as opposed to the type or value names
 on the left hand side is that with changing names in destructuring it is more likely that lines
 would shift, causing merge conflicts. Type and object destructuring lists are also sorted by
-imported names, with uncapitalized names grouped first.
+local names, with uncapitalized names grouped first.
 
 ### Scope
 
@@ -69,6 +66,7 @@ There are also a few things that are not supported yet that would be nice to sup
 + Only add requires for known modules by maintaining a list of known modules, or by getting this
 information from Flow.
 + Allow per-directory configurations.
++ `import` statements for requiring values.
 
 Right now the recommended set up is to not run-on-save and instead use the default
 keyboard shortcut.

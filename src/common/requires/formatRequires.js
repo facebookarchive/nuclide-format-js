@@ -9,10 +9,11 @@
  */
 
 import type {Collection, Node, NodePath} from '../types/ast';
+import type {SourceOptions} from '../options/SourceOptions';
 
 import FirstNode from '../utils/FirstNode';
 import NewLine from '../utils/NewLine';
-import {compareStrings, isCapitalized} from '../utils/StringUtils';
+import {compareStringsCapitalsFirst, isCapitalized} from '../utils/StringUtils';
 import hasOneRequireDeclaration from '../utils/hasOneRequireDeclaration';
 import isGlobal from '../utils/isGlobal';
 import isRequireExpression from '../utils/isRequireExpression';
@@ -23,8 +24,8 @@ import reprintRequire from '../utils/reprintRequire';
 
 type ConfigEntry = {
   nodeType: string,
-  filters: Array<(path: NodePath) => boolean>,
-  getSource: (node: Node) => string,
+  filters: Array<(path: NodePath, options: SourceOptions) => boolean>,
+  getSource: (node: Node, options: SourceOptions) => string,
 };
 
 // Set up a config to easily add require formats
@@ -32,15 +33,7 @@ const CONFIG: Array<ConfigEntry> = [
   // Handle type imports
   {
     nodeType: jscs.ImportDeclaration,
-    filters: [isGlobal, isTypeImport],
-    getSource: node =>
-      node.source.value,
-  },
-
-  // Handle typeof imports
-  {
-    nodeType: jscs.ImportDeclaration,
-    filters: [isGlobal, isTypeofImport],
+    filters: [isGlobal, path => isTypeImport(path) || isTypeofImport(path)],
     getSource: node =>
       node.source.value,
   },
@@ -53,7 +46,7 @@ const CONFIG: Array<ConfigEntry> = [
       path => isRequireExpression(path.node),
     ],
     getSource: node =>
-      getDeclarationModuleName(node.expression),
+      getModuleName(node.expression),
   },
 
   // Handle UpperCase requires, e.g: `const UpperCase = require('UpperCase');`
@@ -62,10 +55,10 @@ const CONFIG: Array<ConfigEntry> = [
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      path => isCapitalizedModuleDeclaration(path.node),
+      (path, options) => isCapitalizedModuleName(path.node, options),
     ],
-    getSource: node =>
-      getDeclarationModuleName(node.declarations[0].init),
+    getSource: (node, options) =>
+      normalizeModuleName(getModuleName(node.declarations[0].init), options),
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
@@ -75,29 +68,27 @@ const CONFIG: Array<ConfigEntry> = [
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      path => !isCapitalizedModuleDeclaration(path.node),
+      (path, options) => !isCapitalizedModuleName(path.node, options),
     ],
-    getSource: node =>
-      getDeclarationModuleName(node.declarations[0].init),
+    getSource: (node, options) =>
+      getModuleName(node.declarations[0].init),
   },
 ];
 
 /**
- * This formats requires based on the left hand side of the require, unless it
- * is a simple require expression in which case there is no left hand side.
+ * This formats requires based on the right hand side of the require.
  *
  * The groups are:
  *
  *   - import types: import type Foo from 'anything';
  *   - require expressions: require('anything');
- *   - capitalized requires: var Foo = require('anything');
+ *   - capitalized requires: var Foo = require('Anything');
  *   - non-capitalized requires: var foo = require('anything');
  *
  * Array and object destructures are also valid left hand sides. Object patterns
- * are sorted and then the first identifier in each of patterns is used for
- * sorting.
+ * are sorted.
  */
-function formatRequires(root: Collection): void {
+function formatRequires(root: Collection, options: SourceOptions): void {
   const first = FirstNode.get(root);
   if (!first) {
     return;
@@ -107,18 +98,18 @@ function formatRequires(root: Collection): void {
   const nodeGroups = CONFIG.map(config => {
     const paths = root
       .find(config.nodeType)
-      .filter(path => config.filters.every(filter => filter(path)));
+      .filter(path => config.filters.every(filter => filter(path, options)));
 
     // Save the underlying nodes before removing the paths
     const nodes = paths.nodes().slice();
     paths.forEach(path => jscs(path).remove());
     const sourceGroups = {};
     nodes.forEach(node => {
-      const source = config.getSource(node);
+      const source = config.getSource(node, options);
       (sourceGroups[source] = sourceGroups[source] || []).push(node);
     });
     return Object.keys(sourceGroups)
-      .sort((source1, source2) => compareStrings(source1, source2))
+      .sort((source1, source2) => compareStringsCapitalsFirst(source1, source2))
       .map(source => reprintRequire(sourceGroups[source]));
   });
 
@@ -160,15 +151,12 @@ function isValidRequireDeclaration(node: Node): boolean {
   return false;
 }
 
-function isCapitalizedModuleDeclaration(node: Node): boolean {
-  const declaration = node.declarations[0];
-  if (jscs.Identifier.check(declaration.id)) {
-    return isCapitalized(declaration.id.name);
-  }
-  return false;
+function isCapitalizedModuleName(node: Node, options: SourceOptions): boolean {
+  const rawName = getModuleName(node.declarations[0].init);
+  return isCapitalized(normalizeModuleName(rawName, options));
 }
 
-function getDeclarationModuleName(requireNode: Node): string {
+function getModuleName(requireNode: Node): string {
   let rhs = requireNode;
   const names = [];
   while (true) {
@@ -188,6 +176,10 @@ function getDeclarationModuleName(requireNode: Node): string {
   }
   names.unshift(rhs.arguments[0].value);
   return names.join('.');
+}
+
+function normalizeModuleName(name: string, options: SourceOptions): string {
+  return options.moduleMap.getAlias(name);
 }
 
 module.exports = formatRequires;

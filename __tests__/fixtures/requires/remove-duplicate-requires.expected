@@ -1,12 +1,10 @@
 import type N from 'N';
-import type {A, B} from 'Z';
-
 import typeof O from 'O';
+import type {A, B} from 'Z';
 
 require('P');
 
 const M = require('M');
-
 const [j, k] = require('Y');
 const {a, b} = require('Z');
 

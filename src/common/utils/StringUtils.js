@@ -40,6 +40,14 @@ function compareStringsCapitalsLast(one: ?string, two: ?string): number {
     : compareStrings(one, two);
 }
 
+function compareStringsCapitalsFirst(one: ?string, two: ?string): number {
+  const byCapitalization =
+    Number(isCapitalized(two || '')) - Number(isCapitalized(one || ''));
+  return byCapitalization !== 0
+    ? byCapitalization
+    : compareStrings(one, two);
+}
+
 function isCapitalized(name: string): boolean {
   return (
     name.length > 0 &&
@@ -54,6 +62,7 @@ function isLowerCase(name: string): boolean {
 module.exports = {
   capitalize,
   compareStrings,
+  compareStringsCapitalsFirst,
   compareStringsCapitalsLast,
   isCapitalized,
   isLowerCase,

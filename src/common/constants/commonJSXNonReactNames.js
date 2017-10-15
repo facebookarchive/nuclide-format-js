@@ -9,4 +9,4 @@
  */
 
 
-module.exports = new Set(['fbt']);
+module.exports = (new Set(['fbt']): Set<string>);
