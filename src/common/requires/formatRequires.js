@@ -58,7 +58,10 @@ const CONFIG: Array<ConfigEntry> = [
       (path, options) => isCapitalizedModuleName(path.node, options),
     ],
     getSource: (node, options) =>
-      normalizeModuleName(getModuleName(node.declarations[0].init), options),
+      normalizeModuleName(
+        tagPatternRequire(getModuleName(node.declarations[0].init), node),
+        options,
+      ),
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
@@ -71,7 +74,7 @@ const CONFIG: Array<ConfigEntry> = [
       (path, options) => !isCapitalizedModuleName(path.node, options),
     ],
     getSource: (node, options) =>
-      getModuleName(node.declarations[0].init),
+      tagPatternRequire(getModuleName(node.declarations[0].init), node),
   },
 ];
 
@@ -180,6 +183,15 @@ function getModuleName(requireNode: Node): string {
 
 function normalizeModuleName(name: string, options: SourceOptions): string {
   return options.moduleMap.getAlias(name);
+}
+
+// Tag pattern requires so they are not mangled by normal id requires,
+// and to make the ordering deterministic
+function tagPatternRequire(name: string, node: Node): string {
+  const tag = jscs.Identifier.check(node.declarations[0].id)
+      ? ''
+      : '|PATTERN';
+  return name + tag;
 }
 
 module.exports = formatRequires;
