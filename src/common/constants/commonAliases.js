@@ -13,7 +13,7 @@
  * that would cause it to be required, the value is the module that is required
  * rather than the key.
  */
-module.exports = new Map([
+module.exports = (new Map([
   ['Immutable', 'immutable'],
   ['fbt', 'fbt'],
-]);
+]): Map<string, string>);

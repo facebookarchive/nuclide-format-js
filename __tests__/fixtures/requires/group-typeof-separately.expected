@@ -1,5 +1,4 @@
 import type A from 'A';
-
 import typeof Bla from 'Bla';
 import typeof Da from 'Da';
 

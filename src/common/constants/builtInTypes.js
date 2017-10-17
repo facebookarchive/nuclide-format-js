@@ -14,7 +14,7 @@
  * NOTE: This is in addition to the standard set of "built-in" modules. This
  * should only be for declared types that are not actual modules.
  */
-module.exports = new Set([
+module.exports = (new Set([
   // Flow built-in utility types
   '$Abstract',
   '$All',
@@ -64,4 +64,4 @@ module.exports = new Set([
   'ReactElement',
   'ReactNode',
   'Set',
-]);
+]): Set<string>);
