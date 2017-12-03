@@ -1,5 +1,9 @@
 
-import type {B as C, A as D} from 'AB';
+import type {A as D, B as C} from 'AB';
 import type {Foo} from 'Foo';
 
-function foo(a: C, b: D, foo: Foo) {}
+import {M as Q, N as O} from 'AB';
+
+function foo(a: C, b: D, foo: Foo) {
+  return [Q, O];
+}
