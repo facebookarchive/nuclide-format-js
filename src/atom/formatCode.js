@@ -14,13 +14,18 @@ import type {SourceOptions} from '../common/options/SourceOptions';
 
 type ErrorWithLocation = {loc?: {line: number, column: number}};
 
-async function formatCode(options: SourceOptions, editor_: ?TextEditor): Promise<void> {
-  const editor = editor_ || atom.workspace.getActiveTextEditor();
+async function formatCode(
+  sourceOptions: SourceOptions,
+  parameters: {addedRequires?: boolean, editor?: TextEditor} = {},
+): Promise<void> {
+  const editor = parameters.editor || atom.workspace.getActiveTextEditor();
   if (!editor) {
     // eslint-disable-next-line no-console
     console.log('- format-js: No active text editor');
     return;
   }
+
+  const options = dontAddRequiresIfUsedAsService(sourceOptions, parameters);
 
   // Save things
   const buffer = editor.getBuffer();
@@ -122,6 +127,20 @@ function syntaxErrorPosition(error: ErrorWithLocation): ?[number, number] {
   return Number.isInteger(line) && Number.isInteger(column)
     ? [line - 1, column]
     : null;
+}
+
+function dontAddRequiresIfUsedAsService(
+  sourceOptions: SourceOptions,
+  parameters: {addedRequires?: boolean},
+): SourceOptions {
+  const blacklist = new Set(sourceOptions.blacklist);
+  if (parameters.addedRequires != null) {
+    blacklist.add('requires.addMissingRequires');
+  }
+  return {
+    ...sourceOptions,
+    blacklist,
+  };
 }
 
 module.exports = formatCode;

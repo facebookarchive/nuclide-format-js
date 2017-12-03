@@ -32,6 +32,7 @@ export type Settings = {
   requiresAddMissingTypes: boolean,
   requiresFormatRequires: boolean,
   runOnSave: boolean,
+  useAsService: boolean,
 };
 
 const {createModuleMap} = formatJSBase;
