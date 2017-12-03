@@ -14,7 +14,8 @@ import type {SourceOptions} from '../options/SourceOptions';
 import FirstNode from '../utils/FirstNode';
 import NewLine from '../utils/NewLine';
 import {compareStringsCapitalsFirst, isCapitalized} from '../utils/StringUtils';
-import hasOneRequireDeclaration from '../utils/hasOneRequireDeclaration';
+import hasOneRequireDeclarationOrModuleImport
+  from '../utils/hasOneRequireDeclarationOrModuleImport';
 import isGlobal from '../utils/isGlobal';
 import isRequireExpression from '../utils/isRequireExpression';
 import isTypeImport from '../utils/isTypeImport';
@@ -38,7 +39,7 @@ const CONFIG: Array<ConfigEntry> = [
       node.source.value,
   },
 
-  // Handle side effects, e.g: `require('monkey-patches');`
+  // Handle side effectful requires, e.g: `require('monkey-patches');`
   {
     nodeType: jscs.ExpressionStatement,
     filters: [
@@ -49,32 +50,58 @@ const CONFIG: Array<ConfigEntry> = [
       getModuleName(node.expression),
   },
 
+  // Handle side effectful imports, e.g: `import 'monkey-patches';`
+  {
+    nodeType: jscs.ImportDeclaration,
+    filters: [path => isBareImport(path.node)],
+    getSource: node =>
+      getModuleName(node),
+  },
+
   // Handle UpperCase requires, e.g: `const UpperCase = require('UpperCase');`
   {
     nodeType: jscs.VariableDeclaration,
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      (path, options) => isCapitalizedModuleName(path.node, options),
+      (path, options) => isCapitalizedRequireName(path.node, options),
     ],
     getSource: (node, options) =>
-      normalizeModuleName(
-        tagPatternRequire(getModuleName(node.declarations[0].init), node),
-        options,
-      ),
+      normalizedRequireSource(node, options),
+  },
+
+  // Handle UpperCase imports, e.g: `import UpperCase from 'UpperCase';`
+  {
+    nodeType: jscs.ImportDeclaration,
+    filters: [
+      (path, options) =>
+        isCapitalizedImportName(path.node, options),
+    ],
+    getSource: (node, options) =>
+      normalizeModuleName(getModuleName(node), options),
   },
 
   // Handle lowerCase requires, e.g: `const lowerCase = require('lowerCase');`
-  // and destructuring
   {
     nodeType: jscs.VariableDeclaration,
     filters: [
       isGlobal,
       path => isValidRequireDeclaration(path.node),
-      (path, options) => !isCapitalizedModuleName(path.node, options),
+      (path, options) => !isCapitalizedRequireName(path.node, options),
     ],
     getSource: (node, options) =>
-      tagPatternRequire(getModuleName(node.declarations[0].init), node),
+      normalizedRequireSource(node, options),
+  },
+
+  // Handle lowerCase imports, e.g: `import lowerCase from 'lowerCase';`
+  {
+    nodeType: jscs.ImportDeclaration,
+    filters: [
+      (path, options) =>
+        !isCapitalizedImportName(path.node, options),
+    ],
+    getSource: (node, options) =>
+      normalizeModuleName(getModuleName(node), options),
   },
 ];
 
@@ -134,7 +161,7 @@ function formatRequires(root: Collection, options: SourceOptions): void {
  * Tests if a variable declaration is a valid require declaration.
  */
 function isValidRequireDeclaration(node: Node): boolean {
-  if (!hasOneRequireDeclaration(node)) {
+  if (!hasOneRequireDeclarationOrModuleImport(node)) {
     return false;
   }
   const declaration = node.declarations[0];
@@ -154,16 +181,29 @@ function isValidRequireDeclaration(node: Node): boolean {
   return false;
 }
 
-function isCapitalizedModuleName(node: Node, options: SourceOptions): boolean {
+function isCapitalizedRequireName(node: Node, options: SourceOptions): boolean {
   const rawName = getModuleName(node.declarations[0].init);
   return isCapitalized(normalizeModuleName(rawName, options));
+}
+
+function isCapitalizedImportName(node: Node, options: SourceOptions): boolean {
+  return isCapitalized(normalizeModuleName(getModuleName(node), options));
+}
+
+function normalizedRequireSource(node: Node, options: SourceOptions): string {
+  return normalizeModuleName(
+    tagPatternRequire(getModuleName(node.declarations[0].init), node),
+    options,
+  );
 }
 
 function getModuleName(requireNode: Node): string {
   let rhs = requireNode;
   const names = [];
   while (true) {
-    if (jscs.MemberExpression.check(rhs)) {
+    if (jscs.ImportDeclaration.check(rhs)) {
+      return rhs.source.value;
+    } else if (jscs.MemberExpression.check(rhs)) {
       names.unshift(rhs.property.name);
       rhs = rhs.object;
     } else if (
@@ -192,6 +232,10 @@ function tagPatternRequire(name: string, node: Node): string {
       ? ''
       : '|PATTERN';
   return name + tag;
+}
+
+function isBareImport(importNode: Node): boolean {
+  return importNode.specifiers.length === 0;
 }
 
 module.exports = formatRequires;

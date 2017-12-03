@@ -83,6 +83,7 @@ const TESTS = [
   'remove-unused-destructured-types',
   'remove-unused-requires',
   'remove-unused-types',
+  'remove-unused-value-imports',
   'respect-declaration-kind',
   'sort-aliases',
   'sort-by-module-names',
@@ -96,6 +97,7 @@ const TESTS = [
   'sort-requires',
   'sort-strange-require-expressions',
   'sort-symbols-as-lowercase',
+  'sort-value-imports',
   'split-multiple-leading-comments',
 ];
 

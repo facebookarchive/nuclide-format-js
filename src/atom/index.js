@@ -65,7 +65,7 @@ export function activate(state: ?Object): void {
 
 export function provideOrganizeRequires(): boolean => void {
   const formatCode = require('./formatCode');
-  return (addedRequires: boolean) => {
+  return addedRequires => {
     formatCode(options, {addedRequires});
   };
 }

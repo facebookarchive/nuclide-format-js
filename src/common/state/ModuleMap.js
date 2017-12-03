@@ -66,18 +66,12 @@ class ModuleMap {
     this._reversedAliases =
       new Map([...options.aliases].map(([i, a]) => [a, i]));
 
-    // TODO: Use let for proper scoping.
-    let id;
-    let ids;
-    let filePath;
-    let set;
-
     this._defaults = new Map();
-    for (filePath of options.paths) {
-      ids = ModuleMapUtils.getIdentifiersFromPath(filePath);
+    for (const filePath of options.paths) {
+      const ids = ModuleMapUtils.getIdentifiersFromPath(filePath);
       const literal = ModuleMapUtils.getLiteralFromPath(filePath);
-      for (id of ids) {
-        set = this._defaults.get(id);
+      for (const id of ids) {
+        let set = this._defaults.get(id);
         if (!set) {
           set = new Set();
           this._defaults.set(id, set);
@@ -87,10 +81,10 @@ class ModuleMap {
     }
 
     this._defaultsToRelativize = new Map();
-    for (filePath of options.pathsToRelativize) {
-      ids = ModuleMapUtils.getIdentifiersFromPath(filePath);
-      for (id of ids) {
-        set = this._defaultsToRelativize.get(id);
+    for (const filePath of options.pathsToRelativize) {
+      const ids = ModuleMapUtils.getIdentifiersFromPath(filePath);
+      for (const id of ids) {
+        let set = this._defaultsToRelativize.get(id);
         if (!set) {
           set = new Set();
           this._defaultsToRelativize.set(id, set);
@@ -103,9 +97,6 @@ class ModuleMap {
   /**
    * Gets a single require, this isn't great for when you want to destructure
    * multiple things in a single statement.
-   *
-   * TODO: add a getRequires() that consolidates automatically, or add a
-   * specific consolidate step as part of the transform.
    */
   getRequire(id: Identifier, options: RequireOptions): ?Node {
     Options.validateRequireOptions(options);
@@ -121,10 +112,7 @@ class ModuleMap {
       }
     }
 
-    // TODO: Use let for proper scoping.
     let literal;
-    let tmp;
-
     if (this._aliases.has(id)) {
       literal = this._aliases.get(id);
     } else if (options.sourcePath && this._aliasesToRelativize.has(id)) {
@@ -141,7 +129,7 @@ class ModuleMap {
       // TODO: What's the best way to get the single thing out of a one element
       // Set?
       // $FlowFixMe(kad)
-      for (tmp of this._defaults.get(id)) {
+      for (const tmp of this._defaults.get(id)) {
         literal = tmp;
         break;
       }
@@ -179,14 +167,14 @@ class ModuleMap {
 
     if (destructure && options.typeImport) {
       // import type {foo} from 'foo';
-      tmp = statement`import type {_} from '_';\n`;
+      const tmp = statement`import type {_} from '_';\n`;
       tmp.specifiers[0].imported = idNode;
       tmp.specifiers[0].local = idNode;
       tmp.source = literalNode;
       return tmp;
     } else if (!destructure && options.typeImport) {
       // import type foo from 'foo';
-      tmp = statement`import type _ from '_';\n`;
+      const tmp = statement`import type _ from '_';\n`;
       tmp.specifiers[0].id = idNode;
       tmp.specifiers[0].local = idNode;
       tmp.source = literalNode;

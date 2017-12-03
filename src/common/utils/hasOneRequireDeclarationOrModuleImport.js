@@ -12,8 +12,17 @@ import type {Node} from '../types/ast';
 
 import hasOneDeclaration from './hasOneDeclaration';
 import isRequireExpression from './isRequireExpression';
+import isValueImport from '../utils/isValueImport';
+import jscs from 'jscodeshift';
 
-function hasOneRequireDeclaration(node: Node): boolean {
+function hasOneRequireDeclarationOrModuleImport(node: Node): boolean {
+  if (
+    jscs.ImportDeclaration.check(node) &&
+    isValueImport(node) &&
+    node.specifiers.length > 0
+  ) {
+    return true;
+  }
   if (!hasOneDeclaration(node)) {
     return false;
   }
@@ -21,4 +30,4 @@ function hasOneRequireDeclaration(node: Node): boolean {
   return isRequireExpression(declaration.init);
 }
 
-module.exports = hasOneRequireDeclaration;
+module.exports = hasOneRequireDeclarationOrModuleImport;
