@@ -135,7 +135,9 @@ function dontAddRequiresIfUsedAsService(
 ): SourceOptions {
   const blacklist = new Set(sourceOptions.blacklist);
   if (parameters.addedRequires != null) {
-    blacklist.add('requires.addMissingRequires');
+    blacklist
+      .add('requires.addMissingRequires')
+      .add('requires.addMissingTypes');
   }
   return {
     ...sourceOptions,
