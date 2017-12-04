@@ -14,9 +14,18 @@ import type {SourceOptions} from '../common/options/SourceOptions';
 
 type ErrorWithLocation = {loc?: {line: number, column: number}};
 
+type ServiceParams = {
+  addedRequires?: boolean,
+  missingExports?: boolean,
+};
+
 async function formatCode(
   sourceOptions: SourceOptions,
-  parameters: {addedRequires?: boolean, editor?: TextEditor} = {},
+  parameters: {
+    addedRequires?: boolean,
+    missingExports?: boolean,
+    editor?: TextEditor,
+  } = {},
 ): Promise<void> {
   const editor = parameters.editor || atom.workspace.getActiveTextEditor();
   if (!editor) {
@@ -32,7 +41,11 @@ async function formatCode(
   const inputSource = buffer.getText();
 
   // Auto-require transform.
-  const {outputSource, error} = transformCodeOrShowError(inputSource, options);
+  const {outputSource, error} = transformCodeOrShowError(
+    inputSource,
+    options,
+    parameters,
+  );
 
   // Update position if source has a syntax error
   if (error && atom.config.get('nuclide-format-js.moveCursorToSyntaxError')) {
@@ -60,6 +73,7 @@ async function formatCode(
 function transformCodeOrShowError(
   inputSource: string,
   options: SourceOptions,
+  parameters: ServiceParams,
 ): {outputSource: string, error?: ErrorWithLocation} {
   const {transform} = require('../common');
   // TODO: Add a limit so the transform is not run on files over a certain size.
@@ -67,59 +81,89 @@ function transformCodeOrShowError(
   try {
     outputSource = transform(inputSource, options);
   } catch (error) {
-    showErrorNotification(error);
+    showErrorNotification(error, parameters);
     return {outputSource: inputSource, error};
   }
-  dismissExistingErrorNotification();
+  dismissNotification(ERROR_TITLE(parameters));
+  dismissNotification(INFO_TITLE(parameters));
   if (
     outputSource === inputSource &&
     // Do not confirm success if user opted out
     atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
   ) {
-    showSuccessNotification();
+    if (parameters.missingExports) {
+      showMissingExportsNotification(parameters);
+    } else {
+      showSuccessNotification(parameters);
+    }
   }
   return {outputSource};
 }
 
-const ERROR_TITLE = 'Nuclide Format JS: Fix Requires failed';
+const ERROR_TITLE = parameters => notificationTitle(parameters, 'failed');
 
-function showErrorNotification(error: Error): void {
-  dismissExistingErrorNotification();
-  dismissExistingSuccessNotification();
-  atom.notifications.addError(ERROR_TITLE, {
+function showErrorNotification(error: Error, parameters: ServiceParams): void {
+  const title = ERROR_TITLE(parameters);
+  dismissNotification(title);
+  atom.notifications.addError(title, {
     detail: error.toString(),
     stack: error.stack,
     dismissable: true,
   });
 }
 
-function dismissExistingErrorNotification(): void {
-  dismissNotification(ERROR_TITLE);
-}
+const SUCCESS_TITLE = parameters => notificationTitle(parameters, 'succeeded');
 
-const SUCCESS_TITLE = 'Nuclide Format JS: Fix Requires succeeded';
-
-let dismissSuccessNotificationTimeout;
-function showSuccessNotification(): void {
-  dismissExistingSuccessNotification();
-  atom.notifications.addSuccess(SUCCESS_TITLE, {
+const notificationTimeouts = {};
+function showSuccessNotification(parameters: ServiceParams): void {
+  const title = SUCCESS_TITLE(parameters);
+  dismissExistingNotification(title);
+  atom.notifications.addSuccess(title, {
     detail: 'No changes were needed.',
     dismissable: true,
   });
-  dismissSuccessNotificationTimeout = setTimeout(() => {
-    dismissExistingSuccessNotification();
+  timeoutNotification(title);
+}
+
+function timeoutNotification(title: string) {
+  notificationTimeouts[title] = setTimeout(() => {
+    dismissExistingNotification(title);
   }, 2000);
 }
 
-function dismissExistingSuccessNotification(): void {
-  dismissNotification(SUCCESS_TITLE);
-  clearTimeout(dismissSuccessNotificationTimeout);
+function dismissExistingNotification(title: string): void {
+  dismissNotification(title);
+  clearTimeout(notificationTimeouts[title]);
+}
+
+const INFO_TITLE = parameters =>
+  notificationTitle(parameters, 'couldn\'t fix all problems');
+
+function showMissingExportsNotification(parameters: ServiceParams): void {
+  const title = INFO_TITLE(parameters);
+  dismissNotification(title);
+  atom.notifications.addInfo(title, {
+    detail: 'Exports for these references couldn\'t be determined. ' +
+      'Either there are multiple possible export candidates, ' +
+      'or none exist, or the Language Server or Flow are still ' +
+      'initializing.',
+    dismissable: true,
+  });
 }
 
 function dismissNotification(title: string): void {
   atom.notifications.getNotifications()
     .filter(notification => notification.getMessage() === title)
     .forEach(notification => notification.dismiss());
+}
+
+function notificationTitle(parameters: ServiceParams, message: string): string {
+  return (
+    (parameters.addedRequires != null
+      ? 'Nuclide JS Imports: Auto Require '
+      : 'Nuclide Format JS: Fix Requires') +
+    message
+  );
 }
 
 function syntaxErrorPosition(error: ErrorWithLocation): ?[number, number] {

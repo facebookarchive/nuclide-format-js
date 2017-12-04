@@ -63,10 +63,11 @@ export function activate(state: ?Object): void {
   subscriptions = localSubscriptions;
 }
 
-export function provideOrganizeRequires(): boolean => void {
+export function provideOrganizeRequires(
+): (parameters: {addedRequires: boolean, missingExports: boolean}) => void {
   const formatCode = require('./formatCode');
-  return addedRequires => {
-    formatCode(options, {addedRequires});
+  return parameters => {
+    formatCode(options, {...parameters});
   };
 }
 
