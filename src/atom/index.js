@@ -16,6 +16,7 @@ import type {Settings} from './settings';
 import {CompositeDisposable} from 'atom';
 
 let subscriptions: ?CompositeDisposable = null;
+let options: SourceOptions = (null: any); // always initialized
 
 export function activate(state: ?Object): void {
   if (subscriptions) {
@@ -27,32 +28,47 @@ export function activate(state: ?Object): void {
   const {calculateOptions, observeSettings} = require('./settings');
 
   const localSubscriptions = new CompositeDisposable();
-  localSubscriptions.add(atom.commands.add(
-    'atom-text-editor',
-    'nuclide-format-js:organize-requires',
-    // Atom prevents in-command modification to text editor content.
-    () => process.nextTick(() => formatCode(options)),
-  ));
 
   // Keep settings up to date with Nuclide config and precalculate options.
-  let settings: Settings;
-  let options: SourceOptions;
+  let settings: Settings = (null: any); // always initialized
   localSubscriptions.add(observeSettings(newSettings => {
     settings = newSettings;
     options = calculateOptions(settings);
   }));
 
+  if (!settings.useAsService) {
+    atom.keymaps.add('nuclide-format-js', {
+      'atom-text-editor': {
+        'cmd-shift-i': 'nuclide-format-js:organize-requires',
+      },
+    });
+    localSubscriptions.add(atom.commands.add(
+      'atom-text-editor',
+      'nuclide-format-js:organize-requires',
+      // Atom prevents in-command modification to text editor content.
+      () => process.nextTick(() => formatCode(options)),
+    ));
+  }
+
   // Format code on save if settings say so
   localSubscriptions.add(atom.workspace.observeTextEditors(editor => {
     localSubscriptions.add(editor.onDidSave(() => {
       if (settings.runOnSave) {
-        process.nextTick(() => formatCode(options, editor));
+        process.nextTick(() => formatCode(options, {editor}));
       }
     }));
   }));
 
   // Work around flow refinements.
   subscriptions = localSubscriptions;
+}
+
+export function provideOrganizeRequires(
+): (parameters: {addedRequires: boolean, missingExports: boolean}) => void {
+  const formatCode = require('./formatCode');
+  return parameters => {
+    formatCode(options, {...parameters});
+  };
 }
 
 export function deactivate(): void {

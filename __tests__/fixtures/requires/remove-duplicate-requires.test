@@ -20,4 +20,10 @@ import typeof O from 'O';
 const [j] = require('Y');
 const [j, k] = require('Y');
 
-const x: A<B, N, O> = a(b, M, j, k);
+import F from 'F';
+import F from 'F';
+
+import {g} from 'G';
+import {h} from 'G';
+
+const x: A<B, N, O> = a(b, M, j, k, F, g, h);

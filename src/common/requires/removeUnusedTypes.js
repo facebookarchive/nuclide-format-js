@@ -57,6 +57,10 @@ function removeUnusedTypes(root: Collection, options: SourceOptions): void {
       .filter(path => config.getNames(path.node).every(
         name => !used.has(name) || declared.has(name) || nonTypeImport.has(name),
       ))
+      .map(x => {
+        console.log(x);
+        return x;
+      })
       .remove();
   });
 }

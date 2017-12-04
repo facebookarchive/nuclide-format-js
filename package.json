@@ -53,10 +53,20 @@
       "__tests__/fixtures/"
     ]
   },
-  "activationCommands": {
-    "atom-text-editor": "nuclide-format-js:organize-requires"
+  "providedServices": {
+    "organizeRequires": {
+      "versions": {
+        "0.0.1": "provideOrganizeRequires"
+      }
+    }
   },
   "configSchema": {
+    "useAsService": {
+      "title": "Use with Nuclide",
+      "description": "Allow Nuclide to provide different `cmd-shift-i` command using Language Server Protocol.",
+      "type": "boolean",
+      "default": true
+    },
     "runOnSave": {
       "title": "Run on save",
       "description": "This setting is not recommended yet. Instead use the default keyboard shortcut, `cmd-shift-i`.",

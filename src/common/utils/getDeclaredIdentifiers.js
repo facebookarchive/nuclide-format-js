@@ -12,6 +12,7 @@ import type {Collection, Node, NodePath} from '../types/ast';
 import type {SourceOptions} from '../options/SourceOptions';
 
 import getNamesFromID from './getNamesFromID';
+import isValueImport from '../utils/isValueImport';
 import jscs from 'jscodeshift';
 
 type ConfigEntry = {
@@ -25,6 +26,15 @@ type ConfigEntry = {
  * been declared.
  */
 const CONFIG: Array<ConfigEntry> = [
+  // import ...rest from ...
+  {
+    nodeType: jscs.ImportDeclaration,
+    getNodes: path =>
+      (isValueImport(path.node)
+        ? path.node.specifiers.map(specifier => specifier.local)
+        : []),
+  },
+
   // function foo(...rest) {}
   {
     nodeType: jscs.FunctionDeclaration,

@@ -8,4 +8,7 @@ const M = require('M');
 const [j, k] = require('Y');
 const {a, b} = require('Z');
 
-const x: A<B, N, O> = a(b, M, j, k);
+import F from 'F';
+import {g, h} from 'G';
+
+const x: A<B, N, O> = a(b, M, j, k, F, g, h);

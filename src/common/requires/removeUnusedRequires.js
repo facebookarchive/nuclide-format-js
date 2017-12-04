@@ -13,7 +13,8 @@ import type {SourceOptions} from '../options/SourceOptions';
 
 import getDeclaredIdentifiers from '../utils/getDeclaredIdentifiers';
 import getNonDeclarationIdentifiers from '../utils/getNonDeclarationIdentifiers';
-import hasOneRequireDeclaration from '../utils/hasOneRequireDeclaration';
+import hasOneRequireDeclarationOrModuleImport
+  from '../utils/hasOneRequireDeclarationOrModuleImport';
 import isGlobal from '../utils/isGlobal';
 import jscs from 'jscodeshift';
 
@@ -25,17 +26,20 @@ function removeUnusedRequires(
   const nonRequires = getDeclaredIdentifiers(
     root,
     options,
-    [path => !hasOneRequireDeclaration(path.node)],
+    [path => !hasOneRequireDeclarationOrModuleImport(path.node)],
   );
 
   jscs.types.visit(root.nodes()[0], {
-    visitVariableDeclaration(path) {
-      if (isGlobal(path) && hasOneRequireDeclaration(path.node)) {
-        pruneNames(path, used, nonRequires);
+    visitNode(path) {
+      if (isGlobal(path)) {
+        if (hasOneRequireDeclarationOrModuleImport(path.node)) {
+          pruneNames(path, used, nonRequires);
+        }
+        // don't traverse this path, there cannot be a toplevel
+        // declaration inside of it
+        return false;
       }
-      // don't traverse this path, there cannot be a toplevel
-      // declaration inside of it
-      return false;
+      this.traverse(path);
     },
   });
 }
@@ -46,6 +50,10 @@ function pruneNames(path: NodePath, used: Set<string>, nonRequires: Set<string>)
   const ids = new Set();
   if (jscs.Identifier.check(node)) {
     ids.add(node.name);
+  } else if (jscs.ImportDeclaration.check(node)) {
+    for (const specifier of node.specifiers) {
+      ids.add(specifier.local.name);
+    }
   } else if (
     jscs.RestElement.check(node) ||
     jscs.SpreadElement.check(node) ||
@@ -86,6 +94,7 @@ function pruneNames(path: NodePath, used: Set<string>, nonRequires: Set<string>)
       return ids;
     }
   }
+  // Actually removes the require/import if no name was used
   path.prune();
 
   return ids;

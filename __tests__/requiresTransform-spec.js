@@ -48,6 +48,7 @@ const TESTS = [
   'allow-only-requires',
   'demote-requires',
   'group-capital-specifiers-with-lowercase',
+  'group-capital-value-import-specifiers-with-lowercase',
   'group-typeof-separately',
   'ignore-arbitrary-new-lines',
   'ignore-array-pattern-elements',
@@ -72,6 +73,7 @@ const TESTS = [
   'promote-types',
   'remove-duplicate-requires',
   'remove-duplicate-inline-requires',
+  'remove-duplicate-inline-value-imports',
   'remove-duplicate-specifiers',
   'remove-extra-new-lines',
   'remove-nested-object-pattern',
@@ -83,6 +85,7 @@ const TESTS = [
   'remove-unused-destructured-types',
   'remove-unused-requires',
   'remove-unused-types',
+  'remove-unused-value-imports',
   'respect-declaration-kind',
   'sort-aliases',
   'sort-by-module-names',
@@ -96,6 +99,7 @@ const TESTS = [
   'sort-requires',
   'sort-strange-require-expressions',
   'sort-symbols-as-lowercase',
+  'sort-value-imports',
   'split-multiple-leading-comments',
 ];
 

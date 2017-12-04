@@ -86,7 +86,7 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
     }
   }
 
-  if (jscs.ImportDeclaration.check(node) && node.importKind === 'type') {
+  if (jscs.ImportDeclaration.check(node)) {
     otherNodes.forEach(otherNode => {
       const otherSpecifiers = otherNode.specifiers
         .filter(specifier => specifier.imported != null);
