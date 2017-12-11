@@ -1,4 +1,0 @@
-import {Z} from 'A';
-import {m} from 'B';
-
-const y = Z + m;

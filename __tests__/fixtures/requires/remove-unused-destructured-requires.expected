@@ -1,4 +1,0 @@
-const {Z} = require('A');
-const {m} = require('B');
-
-const y = Z + m;

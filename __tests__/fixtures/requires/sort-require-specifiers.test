@@ -1,7 +1,0 @@
-
-
-const {C, B, aB, aA} = require('Z');
-const {s, Q, P} = require('X');
-
-aA(aB(B, C, D))
-s(Q, P)

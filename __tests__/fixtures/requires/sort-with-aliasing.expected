@@ -1,4 +1,0 @@
-const Z = require('A').B.c.Y;
-const Y = require('AB');
-
-const x = Y + Z;

@@ -1,3 +1,0 @@
-import {a, a, b as c, b} from 'a';
-
-const x = a(b, c);
