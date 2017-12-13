@@ -17,8 +17,6 @@ import Options from '../options/Options';
 import jscs from 'jscodeshift';
 import oneLineObjectPattern from '../utils/oneLineObjectPattern';
 
-const {statement} = jscs.template;
-
 class ModuleMap {
   // Note: These fields are ordered by precendence.
 
@@ -165,6 +163,7 @@ class ModuleMap {
     // TODO: Support exports and destructuring.
     const destructure = false;
 
+    const {statement} = jscs.template;
     if (destructure && options.typeImport) {
       // import type {foo} from 'foo';
       const tmp = statement`import type {_} from '_';\n`;

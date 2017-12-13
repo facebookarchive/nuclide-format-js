@@ -25,6 +25,7 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "6.1.2",
+    "babel-plugin-transform-inline-imports-commonjs": "1.2.0",
     "babel-preset-env": "^1.5.2",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-stage-2": "^6.24.1",
@@ -45,6 +46,15 @@
       "flow",
       "env",
       "stage-2"
+    ],
+    "plugins": [
+      [
+        "transform-inline-imports-commonjs",
+        {
+          "excludeModules": ["atom"],
+          "excludeNodeBuiltins": true
+        }
+      ]
     ]
   },
   "jest": {
