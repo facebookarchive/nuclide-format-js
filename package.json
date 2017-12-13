@@ -1,6 +1,6 @@
 {
   "name": "nuclide-format-js",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "A collection of codemods to help auto format javascript",
   "keywords": [
     "codemod",
@@ -10,7 +10,7 @@
   "homepage": "https://nuclide.io/",
   "license": "SEE LICENSE IN LICENSE",
   "main": "./lib/index.js",
-  "repository": "https://github.com/facebooknuclide/nuclide-format-js",
+  "repository": "https://github.com/facebook-atom/nuclide-format-js",
   "scripts": {
     "build": "yarn run clean && babel src --out-dir lib",
     "clean": "rm -rf lib",
@@ -51,7 +51,9 @@
       [
         "transform-inline-imports-commonjs",
         {
-          "excludeModules": ["atom"],
+          "excludeModules": [
+            "atom"
+          ],
           "excludeNodeBuiltins": true
         }
       ]
