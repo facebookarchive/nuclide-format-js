@@ -1,4 +1,0 @@
-!.eslintrc.js
-/lib/
-**/node_modules/**
-**/flow-typed/**

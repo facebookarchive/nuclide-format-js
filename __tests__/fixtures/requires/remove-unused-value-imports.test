@@ -1,4 +1,0 @@
-import three from 'three';
-import two from 'two';
-
-const one = two;
