@@ -54,7 +54,7 @@ export function activate(state: ?Object): void {
   localSubscriptions.add(atom.workspace.observeTextEditors(editor => {
     localSubscriptions.add(editor.onDidSave(() => {
       if (settings.runOnSave) {
-        process.nextTick(() => formatCode(options, {editor}));
+        process.nextTick(() => formatCode(options, null, editor));
       }
     }));
   }));
@@ -67,7 +67,7 @@ export function provideOrganizeRequires(
 ): (parameters: {addedRequires: boolean, missingExports: boolean}) => void {
   const formatCode = require('./formatCode');
   return parameters => {
-    formatCode(options, {...parameters});
+    formatCode(options, parameters);
   };
 }
 

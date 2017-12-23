@@ -14,27 +14,24 @@ import type {SourceOptions} from '../common/options/SourceOptions';
 
 type ErrorWithLocation = {loc?: {line: number, column: number}};
 
-type ServiceParams = {
-  addedRequires?: boolean,
-  missingExports?: boolean,
+type ServiceParams = ?{
+  addedRequires: boolean,
+  missingExports: boolean,
 };
 
 async function formatCode(
   sourceOptions: SourceOptions,
-  parameters: {
-    addedRequires?: boolean,
-    missingExports?: boolean,
-    editor?: TextEditor,
-  } = {},
+  serviceParams: ServiceParams,
+  targetEditor?: TextEditor,
 ): Promise<void> {
-  const editor = parameters.editor || atom.workspace.getActiveTextEditor();
+  const editor = targetEditor || atom.workspace.getActiveTextEditor();
   if (!editor) {
     // eslint-disable-next-line no-console
     console.log('- format-js: No active text editor');
     return;
   }
 
-  const options = dontAddRequiresIfUsedAsService(sourceOptions, parameters);
+  const options = dontAddRequiresIfUsedAsService(sourceOptions, serviceParams);
 
   // Save things
   const buffer = editor.getBuffer();
@@ -44,7 +41,7 @@ async function formatCode(
   const {outputSource, error} = transformCodeOrShowError(
     inputSource,
     options,
-    parameters,
+    serviceParams,
   );
 
   // Update position if source has a syntax error
@@ -73,7 +70,7 @@ async function formatCode(
 function transformCodeOrShowError(
   inputSource: string,
   options: SourceOptions,
-  parameters: ServiceParams,
+  serviceParams: ServiceParams,
 ): {outputSource: string, error?: ErrorWithLocation} {
   const {transform} = require('../common');
   // TODO: Add a limit so the transform is not run on files over a certain size.
@@ -81,29 +78,29 @@ function transformCodeOrShowError(
   try {
     outputSource = transform(inputSource, options);
   } catch (error) {
-    showErrorNotification(error, parameters);
+    showErrorNotification(error, serviceParams);
     return {outputSource: inputSource, error};
   }
-  dismissNotification(ERROR_TITLE(parameters));
-  dismissNotification(INFO_TITLE(parameters));
+  dismissNotification(ERROR_TITLE(serviceParams));
+  dismissNotification(INFO_TITLE(serviceParams));
   if (
     outputSource === inputSource &&
     // Do not confirm success if user opted out
     atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
   ) {
-    if (parameters.missingExports) {
-      showMissingExportsNotification(parameters);
+    if (serviceParams != null && serviceParams.missingExports) {
+      showMissingExportsNotification(serviceParams);
     } else {
-      showSuccessNotification(parameters);
+      showSuccessNotification(serviceParams);
     }
   }
   return {outputSource};
 }
 
-const ERROR_TITLE = parameters => notificationTitle(parameters, 'failed');
+const ERROR_TITLE = serviceParams => notificationTitle(serviceParams, 'failed');
 
-function showErrorNotification(error: Error, parameters: ServiceParams): void {
-  const title = ERROR_TITLE(parameters);
+function showErrorNotification(error: Error, serviceParams: ServiceParams): void {
+  const title = ERROR_TITLE(serviceParams);
   dismissNotification(title);
   atom.notifications.addError(title, {
     detail: error.toString(),
@@ -112,11 +109,11 @@ function showErrorNotification(error: Error, parameters: ServiceParams): void {
   });
 }
 
-const SUCCESS_TITLE = parameters => notificationTitle(parameters, 'succeeded');
+const SUCCESS_TITLE = serviceParams => notificationTitle(serviceParams, 'succeeded');
 
 const notificationTimeouts = {};
-function showSuccessNotification(parameters: ServiceParams): void {
-  const title = SUCCESS_TITLE(parameters);
+function showSuccessNotification(serviceParams: ServiceParams): void {
+  const title = SUCCESS_TITLE(serviceParams);
   dismissExistingNotification(title);
   atom.notifications.addSuccess(title, {
     detail: 'No changes were needed.',
@@ -136,11 +133,11 @@ function dismissExistingNotification(title: string): void {
   clearTimeout(notificationTimeouts[title]);
 }
 
-const INFO_TITLE = parameters =>
-  notificationTitle(parameters, 'couldn\'t fix all problems');
+const INFO_TITLE = serviceParams =>
+  notificationTitle(serviceParams, 'couldn\'t fix all problems');
 
-function showMissingExportsNotification(parameters: ServiceParams): void {
-  const title = INFO_TITLE(parameters);
+function showMissingExportsNotification(serviceParams: ServiceParams): void {
+  const title = INFO_TITLE(serviceParams);
   dismissNotification(title);
   atom.notifications.addInfo(title, {
     detail: 'Exports for these references couldn\'t be determined. ' +
@@ -157,9 +154,9 @@ function dismissNotification(title: string): void {
     .forEach(notification => notification.dismiss());
 }
 
-function notificationTitle(parameters: ServiceParams, message: string): string {
+function notificationTitle(serviceParams: ServiceParams, message: string): string {
   return (
-    (parameters.addedRequires != null
+    (serviceParams != null
       ? 'Nuclide JS Imports: Auto Require '
       : 'Nuclide Format JS: Fix Requires') +
     message
@@ -175,10 +172,10 @@ function syntaxErrorPosition(error: ErrorWithLocation): ?[number, number] {
 
 function dontAddRequiresIfUsedAsService(
   sourceOptions: SourceOptions,
-  parameters: {addedRequires?: boolean},
+  serviceParams: ServiceParams,
 ): SourceOptions {
   const blacklist = new Set(sourceOptions.blacklist);
-  if (parameters.addedRequires != null) {
+  if (serviceParams != null) {
     blacklist
       .add('requires.addMissingRequires')
       .add('requires.addMissingTypes');
