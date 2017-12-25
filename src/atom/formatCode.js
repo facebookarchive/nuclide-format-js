@@ -88,8 +88,8 @@ function transformCodeOrShowError(
   dismissNotification(INFO_TITLE(serviceParams));
   if (
     outputSource === inputSource &&
-    // Do not confirm success if user opted out
-    atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
+    // Maybe the source was changed by nuclide-js-imports
+    (serviceParams == null || !serviceParams.addedRequires)
   ) {
     if (
       serviceParams != null &&
@@ -97,7 +97,10 @@ function transformCodeOrShowError(
       (parsingInfo.missingTypes || parsingInfo.missingRequires)
     ) {
       showMissingExportsNotification(serviceParams);
-    } else {
+    } else if (
+      // Do not confirm success if user opted out
+      atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
+    ) {
       showSuccessNotification(serviceParams);
     }
   }
