@@ -17,6 +17,7 @@ export type SourceOptions = {
    * The set of transforms to blacklist.
    */
   blacklist?: Set<TransformKey>,
+  dontAddMissing?: boolean,
   moduleMap: ModuleMap,
   sourcePath?: AbsolutePath,
   jsxSuffix?: boolean,

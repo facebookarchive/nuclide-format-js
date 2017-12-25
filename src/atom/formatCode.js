@@ -72,11 +72,14 @@ function transformCodeOrShowError(
   options: SourceOptions,
   serviceParams: ServiceParams,
 ): {outputSource: string, error?: ErrorWithLocation} {
-  const {transform} = require('../common');
+  const transform = require('../common/transform');
   // TODO: Add a limit so the transform is not run on files over a certain size.
   let outputSource;
+  let parsingInfo;
   try {
-    outputSource = transform(inputSource, options);
+    const result = transform(inputSource, options);
+    outputSource = result.output;
+    parsingInfo = result.info;
   } catch (error) {
     showErrorNotification(error, serviceParams);
     return {outputSource: inputSource, error};
@@ -88,7 +91,11 @@ function transformCodeOrShowError(
     // Do not confirm success if user opted out
     atom.config.get('nuclide-format-js.confirmNoChangeSuccess')
   ) {
-    if (serviceParams != null && serviceParams.missingExports) {
+    if (
+      serviceParams != null &&
+      serviceParams.missingExports &&
+      (parsingInfo.missingTypes || parsingInfo.missingRequires)
+    ) {
       showMissingExportsNotification(serviceParams);
     } else {
       showSuccessNotification(serviceParams);
@@ -174,15 +181,9 @@ function dontAddRequiresIfUsedAsService(
   sourceOptions: SourceOptions,
   serviceParams: ServiceParams,
 ): SourceOptions {
-  const blacklist = new Set(sourceOptions.blacklist);
-  if (serviceParams != null) {
-    blacklist
-      .add('requires.addMissingRequires')
-      .add('requires.addMissingTypes');
-  }
   return {
     ...sourceOptions,
-    blacklist,
+    dontAddMissing: serviceParams != null,
   };
 }
 

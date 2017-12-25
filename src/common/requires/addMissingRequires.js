@@ -15,10 +15,10 @@ import FirstNode from '../utils/FirstNode';
 import getUndeclaredIdentifiers from '../utils/getUndeclaredIdentifiers';
 import getUndeclaredJSXIdentifiers from '../utils/getUndeclaredJSXIdentifiers';
 
-function addMissingRequires(root: Collection, options: SourceOptions): void {
+function addMissingRequires(root: Collection, options: SourceOptions): boolean {
   const first = FirstNode.get(root);
   if (!first) {
-    return;
+    return false;
   }
   const _first = first; // For flow.
 
@@ -26,13 +26,17 @@ function addMissingRequires(root: Collection, options: SourceOptions): void {
   const jsxIdentifiers = getUndeclaredJSXIdentifiers(root, options);
 
   // Add the missing requires.
-  getUndeclaredIdentifiers(root, options).forEach(name => {
-    const node = moduleMap.getRequire(name, {
-      jsxSuffix: jsxIdentifiers.has(name) ? options.jsxSuffix : undefined,
-      sourcePath: options.sourcePath,
+  const undeclaredIdentifiers = getUndeclaredIdentifiers(root, options);
+  if (!options.dontAddMissing) {
+    undeclaredIdentifiers.forEach(name => {
+      const node = moduleMap.getRequire(name, {
+        jsxSuffix: jsxIdentifiers.has(name) ? options.jsxSuffix : undefined,
+        sourcePath: options.sourcePath,
+      });
+      _first.insertBefore(node);
     });
-    _first.insertBefore(node);
-  });
+  }
+  return undeclaredIdentifiers.size > 0;
 }
 
 module.exports = addMissingRequires;

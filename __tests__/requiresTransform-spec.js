@@ -124,7 +124,7 @@ describe('requiresTransform', () => {
       const expectedPath = path.join(__dirname, 'fixtures/requires/' + name + '.expected');
 
       const test = await readFileP(testPath);
-      const actual = transform(test, SOURCE_OPTIONS);
+      const {output: actual} = transform(test, SOURCE_OPTIONS);
       const expected = await readFileP(expectedPath);
       expect(actual).toBe(expected);
     });

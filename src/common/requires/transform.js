@@ -20,12 +20,19 @@ import removeLeadingComments from './removeLeadingComments';
 import removeUnusedRequires from './removeUnusedRequires';
 import removeUnusedTypes from './removeUnusedTypes';
 
+export type ParsingInfo = {
+  missingRequires: ?boolean,
+  missingTypes: ?boolean,
+};
+
 /**
  * This is the collection of transforms that affect requires.
  */
-function transform(root: Collection, options: SourceOptions): void {
+function transform(root: Collection, options: SourceOptions): ParsingInfo {
   const blacklist: Set<TransformKey> = options.blacklist || new Set();
   let comments;
+  let missingRequires;
+  let missingTypes;
   if (!blacklist.has('requires.transferComments')) {
     comments = removeLeadingComments(root);
   }
@@ -33,13 +40,13 @@ function transform(root: Collection, options: SourceOptions): void {
     removeUnusedRequires(root, options);
   }
   if (!blacklist.has('requires.addMissingRequires')) {
-    addMissingRequires(root, options);
+    missingRequires = addMissingRequires(root, options);
   }
   if (!blacklist.has('requires.removeUnusedTypes')) {
     removeUnusedTypes(root, options);
   }
   if (!blacklist.has('requires.addMissingTypes')) {
-    addMissingTypes(root, options);
+    missingTypes = addMissingTypes(root, options);
   }
   if (!blacklist.has('requires.formatRequires')) {
     formatRequires(root, options);
@@ -47,6 +54,7 @@ function transform(root: Collection, options: SourceOptions): void {
   if (!blacklist.has('requires.transferComments')) {
     addLeadingComments(root, comments);
   }
+  return {missingRequires, missingTypes};
 }
 
 module.exports = transform;
