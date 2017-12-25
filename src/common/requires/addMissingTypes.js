@@ -14,10 +14,10 @@ import type {SourceOptions} from '../options/SourceOptions';
 import FirstNode from '../utils/FirstNode';
 import getUndeclaredTypes from '../utils/getUndeclaredTypes';
 
-function addMissingTypes(root: Collection, options: SourceOptions): void {
+function addMissingTypes(root: Collection, options: SourceOptions): boolean {
   const first = FirstNode.get(root);
   if (!first) {
-    return;
+    return false;
   }
   const _first = first; // For flow.
 
@@ -27,10 +27,14 @@ function addMissingTypes(root: Collection, options: SourceOptions): void {
     typeImport: true,
   };
 
-  getUndeclaredTypes(root, options).forEach(name => {
-    const node = moduleMap.getRequire(name, requireOptions);
-    _first.insertBefore(node);
-  });
+  const undeclaredTypes = getUndeclaredTypes(root, options);
+  if (!options.dontAddMissing) {
+    undeclaredTypes.forEach(name => {
+      const node = moduleMap.getRequire(name, requireOptions);
+      _first.insertBefore(node);
+    });
+  }
+  return undeclaredTypes.size > 0;
 }
 
 module.exports = addMissingTypes;
