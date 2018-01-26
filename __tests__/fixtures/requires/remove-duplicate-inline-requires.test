@@ -1,3 +1,0 @@
-const {a, a, b: c, b} = require('a');
-
-const x = a(b, c);

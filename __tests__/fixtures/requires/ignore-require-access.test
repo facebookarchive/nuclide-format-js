@@ -1,3 +1,0 @@
-require.requireActual('./polyfill/iterator.enumerate.js');
-
-const x = X;

@@ -1,3 +1,0 @@
-const fbt = require('fbt');
-
-const label = <fbt>lorem ipsum <fbt:param>{"dolor sit amet"}</fbt:param></fbt>;
