@@ -27,15 +27,16 @@ function addMissingRequires(root: Collection, options: SourceOptions): boolean {
 
   // Add the missing requires.
   const undeclaredIdentifiers = getUndeclaredIdentifiers(root, options);
-  if (!options.dontAddMissing) {
-    undeclaredIdentifiers.forEach(name => {
+  
+  undeclaredIdentifiers.forEach(name => {
+    if (!options.dontAddMissing || options.alwaysAddMissingNames.has(name)) {
       const node = moduleMap.getRequire(name, {
         jsxSuffix: jsxIdentifiers.has(name) ? options.jsxSuffix : undefined,
         sourcePath: options.sourcePath,
       });
       _first.insertBefore(node);
-    });
-  }
+    }
+  });
   return undeclaredIdentifiers.size > 0;
 }
 

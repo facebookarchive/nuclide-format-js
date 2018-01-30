@@ -22,4 +22,5 @@ export type SourceOptions = {
   sourcePath?: AbsolutePath,
   jsxSuffix?: boolean,
   jsxNonReactNames: Set<string>,
+  alwaysAddMissingNames: Set<string>,
 };
