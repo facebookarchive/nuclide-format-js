@@ -79,6 +79,17 @@
       "type": "boolean",
       "default": true
     },
+    "alwaysAddMissingNames": {
+      "title": "Nuclide: Always required names",
+      "description": "These missing module names will always be required, even if Nuclide cannot find them.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "React"
+      ]
+    },
     "runOnSave": {
       "title": "Run on save",
       "description": "This setting is not recommended yet. Instead use the default keyboard shortcut, `cmd-shift-i`.",

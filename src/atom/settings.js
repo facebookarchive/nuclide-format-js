@@ -63,6 +63,7 @@ export function calculateOptions(settings: Settings): SourceOptions {
     moduleMap: calculateModuleMap(settings),
     jsxSuffix: settings.jsxSuffix,
     jsxNonReactNames: new Set(settings.jsxNonReactNames),
+    alwaysAddMissingNames: new Set(settings.alwaysAddMissingNames),
   };
 }
 
