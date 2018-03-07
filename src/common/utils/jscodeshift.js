@@ -8,13 +8,6 @@
  * @flow
  */
 
-declare var atom: any;
-declare var TextEditor: any;
+import jscs from 'jscodeshift';
 
-declare module 'atom' {
-  declare module.exports: any;
-}
-
-interface IDisposable {
-  dispose(): mixed,
-}
+module.exports = jscs.withParser('babylon');

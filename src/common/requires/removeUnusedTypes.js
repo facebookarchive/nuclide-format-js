@@ -16,7 +16,7 @@ import getDeclaredTypes from '../utils/getDeclaredTypes';
 import getNonDeclarationTypes from '../utils/getNonDeclarationTypes';
 import isGlobal from '../utils/isGlobal';
 import isTypeImport from '../utils/isTypeImport';
-import jscs from 'jscodeshift';
+import jscs from '../utils/jscodeshift';
 
 const {match} = jscs;
 

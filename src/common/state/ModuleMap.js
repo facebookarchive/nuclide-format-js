@@ -14,7 +14,7 @@ import type {RequireOptions} from '../options/RequireOptions';
 
 import ModuleMapUtils from '../utils/ModuleMapUtils';
 import Options from '../options/Options';
-import jscs from 'jscodeshift';
+import jscs from '../utils/jscodeshift';
 import oneLineObjectPattern from '../utils/oneLineObjectPattern';
 
 class ModuleMap {

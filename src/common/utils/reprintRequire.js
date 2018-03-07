@@ -11,7 +11,7 @@
 import type {Node} from '../types/ast';
 
 import {compareStringsCapitalsLast} from './StringUtils';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 import oneLineObjectPattern from './oneLineObjectPattern';
 import reprintComment from './reprintComment';
 

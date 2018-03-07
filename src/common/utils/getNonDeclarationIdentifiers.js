@@ -13,7 +13,7 @@ import type {SourceOptions} from '../options/SourceOptions';
 
 import getJSXIdentifierName from './getJSXIdentifierName';
 import getNamesFromID from './getNamesFromID';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 type ConfigEntry = {
   nodeType: string,
@@ -187,6 +187,12 @@ const CONFIG: Array<ConfigEntry> = [
       ),
   },
 
+  // Special case. Any JSX fragment will get transpiled to use React.
+  {
+    nodeType: jscs.JSXFragment,
+    getNodes: (path, options) => [REACT_NODE],
+  },
+
   // foo`something`
   {
     nodeType: jscs.TaggedTemplateExpression,
@@ -225,6 +231,7 @@ function getNonDeclarationIdentifiers(root: Collection, options: SourceOptions):
   CONFIG.forEach(config => {
     visitor[`visit${config.nodeType}`] = function(path) {
       const nodes = config.getNodes(path, options);
+
       nodes.forEach(node => {
         const names = getNamesFromID(node);
         for (const name of names) {

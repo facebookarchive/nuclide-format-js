@@ -13,7 +13,7 @@ import type {SourceOptions} from '../options/SourceOptions';
 
 import getNamesFromID from './getNamesFromID';
 import isValueImport from '../utils/isValueImport';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 type ConfigEntry = {
   nodeType: string,

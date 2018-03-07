@@ -10,7 +10,7 @@
 
 import type {Node, NodePath} from '../types/ast';
 
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 import {isLowerCase} from './StringUtils';
 
 // TODO: make this configurable somehow, we probably don't want to explicitly

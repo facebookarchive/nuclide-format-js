@@ -11,7 +11,7 @@
 import type {Collection, Node, NodePath} from '../types/ast';
 import type {SourceOptions} from '../options/SourceOptions';
 
-import jscs from 'jscodeshift';
+import jscs from '../utils/jscodeshift';
 
 type ConfigEntry = {
   nodeType: string,

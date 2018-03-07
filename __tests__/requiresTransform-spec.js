@@ -29,6 +29,7 @@ const TESTS = [
   'add-function-calls',
   'add-if-elses',
   'add-jsx-elements',
+  'add-jsx-fragments',
   'add-loops',
   'add-object-properties',
   'add-object-spreads',
@@ -104,6 +105,7 @@ const TESTS = [
 ];
 
 const SOURCE_OPTIONS = {
+  alwaysAddMissingNames: new Set(),
   moduleMap: DefaultModuleMap,
   jsxSuffix: true,
   jsxNonReactNames: defaultJSXNonReactNames,

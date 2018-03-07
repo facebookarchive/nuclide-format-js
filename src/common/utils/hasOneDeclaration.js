@@ -10,7 +10,7 @@
 
 import type {Node} from '../types/ast';
 
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 const {match} = jscs;
 

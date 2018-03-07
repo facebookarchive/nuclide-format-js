@@ -11,7 +11,7 @@
 import type {Collection} from '../types/ast';
 
 import getJSXIdentifierName from './getJSXIdentifierName';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 /**
  * This will get a list of identifiers for JSXElements in the AST

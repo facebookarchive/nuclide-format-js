@@ -19,7 +19,7 @@
     "watch": "yarn run clean && babel src --out-dir lib --watch"
   },
   "dependencies": {
-    "jscodeshift": "^0.3.31",
+    "jscodeshift": "^5.0.0",
     "regenerator-runtime": "^0.10.5"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "eslint-plugin-babel": "3.3.0",
     "eslint-plugin-flowtype": "2.6.1",
     "eslint-plugin-prefer-object-spread": "1.1.0",
-    "flow-bin": "^0.57.2",
+    "flow-bin": "^0.66.0",
     "jest": "^20.0.4"
   },
   "engines": {

@@ -11,7 +11,7 @@
 import type {Node} from '../types/ast';
 
 import getRootIdentifierInExpression from './getRootIdentifierInExpression';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 function isRequireExpression(node: Node): boolean {
   const rootIdentifier = getRootIdentifierInExpression(node);
