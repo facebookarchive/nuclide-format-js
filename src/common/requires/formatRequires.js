@@ -20,7 +20,7 @@ import isGlobal from '../utils/isGlobal';
 import isRequireExpression from '../utils/isRequireExpression';
 import isTypeImport from '../utils/isTypeImport';
 import isTypeofImport from '../utils/isTypeofImport';
-import jscs from 'jscodeshift';
+import jscs from '../utils/jscodeshift';
 import reprintRequire from '../utils/reprintRequire';
 
 type ConfigEntry = {

@@ -8,7 +8,7 @@
  * @flow
  */
 
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 /**
  * This module helps support a hack to easily introduce new lines into the AST.

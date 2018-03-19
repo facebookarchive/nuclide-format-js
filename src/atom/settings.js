@@ -20,6 +20,7 @@ import formatJSBase from '../common';
 // the blacklist, and control the plugin behavior.
 export type Settings = {
   aliases: Array<[string, string]>,
+  alwaysAddMissingNames: Array<string>,
   builtIns: Array<string>,
   builtInTypes: Array<string>,
   jsxNonReactNames: Array<string>,

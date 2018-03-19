@@ -33,6 +33,7 @@ describe('options', () => {
 
     const root = jscs(test);
     requiresTransform(root, {
+      alwaysAddMissingNames: new Set(),
       moduleMap: DefaultModuleMap,
       blacklist: new Set(['requires.removeUnusedRequires']),
       jsxNonReactNames: defaultJSXNonReactNames,

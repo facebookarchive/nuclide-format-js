@@ -16,7 +16,7 @@ import getNonDeclarationIdentifiers from '../utils/getNonDeclarationIdentifiers'
 import hasOneRequireDeclarationOrModuleImport
   from '../utils/hasOneRequireDeclarationOrModuleImport';
 import isGlobal from '../utils/isGlobal';
-import jscs from 'jscodeshift';
+import jscs from '../utils/jscodeshift';
 
 function removeUnusedRequires(
   root: Collection,

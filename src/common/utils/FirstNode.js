@@ -13,7 +13,7 @@ import type {Collection, NodePath} from '../types/ast';
 import NewLine from './NewLine';
 import getRootIdentifierInExpression from './getRootIdentifierInExpression';
 import isGlobal from './isGlobal';
-import jscs from 'jscodeshift';
+import jscs from './jscodeshift';
 
 const {match} = jscs;
 
