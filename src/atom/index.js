@@ -52,11 +52,19 @@ export function activate(state: ?Object): void {
 
   // Format code on save if settings say so
   localSubscriptions.add(atom.workspace.observeTextEditors(editor => {
-    localSubscriptions.add(editor.onDidSave(() => {
+    const onSaveSubscription = editor.onDidSave(() => {
       if (settings.runOnSave) {
         process.nextTick(() => formatCode(options, null, editor));
       }
-    }));
+    });
+    const subscription = new CompositeDisposable(
+      onSaveSubscription,
+      editor.onDidDestroy(() => {
+        localSubscriptions.remove(subscription);
+        subscription.dispose();
+      }),
+    );
+    localSubscriptions.add(subscription);
   }));
 
   // Work around flow refinements.
