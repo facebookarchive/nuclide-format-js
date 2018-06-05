@@ -1,6 +1,6 @@
 # nuclide-format-js
 
-[![Build Status](https://travis-ci.org/facebooknuclide/nuclide-format-js.svg?branch=master)](https://travis-ci.org/facebooknuclide/nuclide-format-js)
+[![Build Status](https://travis-ci.org/facebook-atom/nuclide-format-js.svg?branch=master)](https://travis-ci.org/facebook-atom/nuclide-format-js)
 
 Use this [Atom](https://atom.io/) plugin to automatically add `require` and `import` statements for values and types in your JavaScript.
 
@@ -80,7 +80,7 @@ particular transforms there.
 
 ```sh
 # Clone the repo
-git clone git@github.com:facebooknuclide/nuclide-format-js.git
+git clone git@github.com:facebook-atom/nuclide-format-js.git
 
 cd nuclide-format-js
 
