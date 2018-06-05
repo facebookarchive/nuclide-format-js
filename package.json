@@ -19,7 +19,7 @@
     "watch": "yarn run clean && babel src --out-dir lib --watch"
   },
   "dependencies": {
-    "jscodeshift": "^0.5.0",
+    "jscodeshift": "^0.5.1",
     "regenerator-runtime": "^0.10.5"
   },
   "devDependencies": {

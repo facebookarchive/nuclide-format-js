@@ -48,6 +48,7 @@ const TESTS = [
   'add-types',
   'allow-only-requires',
   'demote-requires',
+  'experimental-syntax',
   'group-capital-specifiers-with-lowercase',
   'group-capital-value-import-specifiers-with-lowercase',
   'group-typeof-separately',
