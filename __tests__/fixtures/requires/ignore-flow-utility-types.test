@@ -1,1 +1,0 @@
-const clubs: $Keys<Class<Suit>> = 'Clubs';

@@ -1,3 +1,0 @@
-const React = require('React');
-
-const x = <>Test</>;

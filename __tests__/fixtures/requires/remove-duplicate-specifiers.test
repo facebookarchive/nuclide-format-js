@@ -1,4 +1,0 @@
-
-import type {A, A} from 'A';
-
-let x: A;

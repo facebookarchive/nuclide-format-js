@@ -1,4 +1,0 @@
-const React = require('React');
-const Y = require('Y.mamlas');
-
-const x = <Y />;
