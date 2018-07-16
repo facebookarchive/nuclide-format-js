@@ -10,7 +10,7 @@
 
 import type {Node} from '../types/ast';
 
-import {compareStringsCapitalsLast} from './StringUtils';
+import {compareStringsCapitalsLast, compareStringsCapitalsFirst} from './StringUtils';
 import jscs from './jscodeshift';
 import oneLineObjectPattern from './oneLineObjectPattern';
 import reprintComment from './reprintComment';
@@ -60,7 +60,7 @@ function reprintRequireHelper(nodes: Array<Node>): Node {
       });
       removeDuplicatesInPlace(declaration.id.properties, one => one.value.name);
       declaration.id.properties.sort((prop1, prop2) => {
-        return compareStringsCapitalsLast(prop1.value.name, prop2.value.name);
+        return compareStringsCapitalsFirst(prop1.value.name, prop2.value.name);
       });
       return jscs.variableDeclaration(
         kind,

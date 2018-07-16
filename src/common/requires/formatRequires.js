@@ -182,8 +182,7 @@ function isValidRequireDeclaration(node: Node): boolean {
 }
 
 function isCapitalizedRequireName(node: Node, options: SourceOptions): boolean {
-  const rawName = getModuleName(node.declarations[0].init);
-  return isCapitalized(normalizeModuleName(rawName, options));
+  return isCapitalized(getModuleName(node.declarations[0].init));
 }
 
 function isCapitalizedImportName(node: Node, options: SourceOptions): boolean {
