@@ -1,5 +1,5 @@
 const X = require('X');
-const {a: d, b: C} = require('Y');
+const {b: C, a: d} = require('Y');
 
 const {c} = require('z');
 
