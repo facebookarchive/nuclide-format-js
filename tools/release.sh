@@ -29,5 +29,4 @@ echo
 echo "    git push master"
 echo "    git push origin $VERSION_TAG"
 echo "    apm publish --tag $VERSION_TAG"
-echo "    yarn publish"
 echo
