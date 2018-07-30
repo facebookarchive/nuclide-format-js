@@ -1,3 +1,0 @@
-const Y = require('Y.mamlas');
-
-const x = <Y />;

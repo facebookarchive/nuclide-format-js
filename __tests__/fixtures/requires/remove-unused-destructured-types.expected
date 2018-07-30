@@ -1,3 +1,0 @@
-import type {A} from 'X';
-
-const x: A = 3;
